@@ -1,0 +1,4 @@
+﻿pydantic==2.13.5
+ollama==0.6.2
+numpy==2.5.3
+pytest==9.1.1

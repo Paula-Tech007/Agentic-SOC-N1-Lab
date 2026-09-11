@@ -1,0 +1,69 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# Testes / Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+logs/*.log
+*.log
+
+# Banco de dados local
+*.db
+*.sqlite
+*.sqlite3
+
+# Dados temporários
+tmp/
+temp/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# RAG / índices gerados
+rag/index/*
+!rag/index/.gitkeep
+
+# Storage gerado durante execução
+storage/database/*
+storage/incidents/*
+storage/audit/*
+
+!storage/database/.gitkeep
+!storage/incidents/.gitkeep
+!storage/audit/.gitkeep
+
+# Modelos locais
+*.gguf
+*.bin
+models/
+
+# Credenciais / chaves
+*.pem
+*.key
+*.crt
+
+# Build / distribuição Python
+build/
+dist/
+*.egg-info/
