@@ -1,8 +1,9 @@
-from .case_state import CaseState
+﻿from .case_state import CaseState
 from .database import (
     DEFAULT_DATABASE_PATH,
     case_exists_sqlite,
     initialize_database,
+    load_audit_events_sqlite,
     load_case_state_sqlite,
     save_case_state_sqlite,
 )
@@ -19,6 +20,7 @@ __all__ = [
     "case_exists_sqlite",
     "deserialize_case_state",
     "initialize_database",
+    "load_audit_events_sqlite",
     "load_case_state_json",
     "load_case_state_sqlite",
     "save_case_state_json",

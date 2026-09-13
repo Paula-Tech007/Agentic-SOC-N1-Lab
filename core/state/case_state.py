@@ -13,13 +13,17 @@ agentes durante o ciclo de vida do caso:
 - evidências;
 - triagem;
 - threat intelligence;
+- phishing;
+- conhecimento / RAG;
 - investigação;
 - QA;
 - decisão de escalonamento;
+- auditoria;
 - workflow.
 
-As evidências são armazenadas como uma tupla de registros
-imutáveis, ajudando a preservar o princípio append-only.
+Evidências e eventos de auditoria são armazenados
+como tuplas de registros imutáveis, preservando
+o princípio append-only.
 """
 
 from datetime import datetime, timezone
@@ -34,11 +38,14 @@ from pydantic import (
 from core.schemas import (
     Alert,
     AssetContext,
+    AuditEvent,
     EscalationResult,
     Evidence,
     IdentityContext,
     IOC,
     InvestigationResult,
+    KnowledgeResult,
+    PhishingResult,
     QAResult,
     ThreatIntelResult,
     TriageResult,
@@ -105,6 +112,16 @@ class CaseState(BaseModel):
         description="Resultado consolidado de Threat Intelligence.",
     )
 
+    phishing: PhishingResult | None = Field(
+        default=None,
+        description="Resultado da análise especializada de phishing.",
+    )
+
+    knowledge: KnowledgeResult | None = Field(
+        default=None,
+        description="Resultado de conhecimento / RAG utilizado no caso.",
+    )
+
     investigation: InvestigationResult | None = Field(
         default=None,
         description="Investigação consolidada do caso.",
@@ -118,6 +135,13 @@ class CaseState(BaseModel):
     escalation: EscalationResult | None = Field(
         default=None,
         description="Decisão operacional final, quando disponível.",
+    )
+
+    audit: tuple[AuditEvent, ...] = Field(
+        default_factory=tuple,
+        description=(
+            "Histórico append-only de eventos de auditoria."
+        ),
     )
 
     workflow: WorkflowState = Field(
@@ -142,8 +166,8 @@ class CaseState(BaseModel):
     @model_validator(mode="after")
     def validate_case_consistency(self) -> "CaseState":
         """
-        Garante que os principais resultados pertencem ao
-        mesmo alerta e à mesma correlação.
+        Garante que resultados, auditoria e correlação pertencem
+        ao mesmo caso.
         """
 
         if self.correlation_id != self.alert.correlation_id:
@@ -165,6 +189,20 @@ class CaseState(BaseModel):
                     "ao alerta deste caso."
                 )
 
+        if self.phishing is not None:
+            if self.phishing.alert_id != self.alert.alert_id:
+                raise ValueError(
+                    "A análise de phishing não pertence "
+                    "ao alerta deste caso."
+                )
+
+        if self.knowledge is not None:
+            if self.knowledge.alert_id != self.alert.alert_id:
+                raise ValueError(
+                    "O resultado de Knowledge/RAG não pertence "
+                    "ao alerta deste caso."
+                )
+
         if self.investigation is not None:
             if self.investigation.alert_id != self.alert.alert_id:
                 raise ValueError(
@@ -178,11 +216,22 @@ class CaseState(BaseModel):
                     "ao alerta deste caso."
                 )
 
+        for audit_event in self.audit:
+            if audit_event.case_id != self.case_id:
+                raise ValueError(
+                    "Evento de auditoria pertence a outro caso."
+                )
+
+            if audit_event.correlation_id != self.correlation_id:
+                raise ValueError(
+                    "Evento de auditoria possui correlation_id diferente."
+                )
+
         return self
 
     def add_evidence(self, evidence: Evidence) -> None:
         """
-        Adiciona uma nova evidência sem alterar registros anteriores.
+        Adiciona uma evidência sem alterar registros anteriores.
 
         IDs duplicados são rejeitados.
         """
@@ -197,7 +246,51 @@ class CaseState(BaseModel):
                 f"Evidência duplicada: {evidence.evidence_id}"
             )
 
-        self.evidence = (*self.evidence, evidence)
+        self.evidence = (
+            *self.evidence,
+            evidence,
+        )
+
+        self.touch()
+
+    def add_audit_event(
+        self,
+        audit_event: AuditEvent,
+    ) -> None:
+        """
+        Adiciona um evento de auditoria de forma append-only.
+
+        Eventos anteriores não são sobrescritos.
+        IDs duplicados são rejeitados.
+        """
+
+        if audit_event.case_id != self.case_id:
+            raise ValueError(
+                "O evento de auditoria pertence a outro caso."
+            )
+
+        if audit_event.correlation_id != self.correlation_id:
+            raise ValueError(
+                "O correlation_id do evento de auditoria "
+                "não corresponde ao caso."
+            )
+
+        existing_ids = {
+            item.audit_id
+            for item in self.audit
+        }
+
+        if audit_event.audit_id in existing_ids:
+            raise ValueError(
+                f"Evento de auditoria duplicado: "
+                f"{audit_event.audit_id}"
+            )
+
+        self.audit = (
+            *self.audit,
+            audit_event,
+        )
+
         self.touch()
 
     def touch(self) -> None:

@@ -1,5 +1,6 @@
 from .alert import Alert, AlertEvent, AlertSource
 from .asset import AssetContext
+from .audit import AuditEvent
 from .enums import (
     ActionType,
     AgentStatus,
@@ -22,6 +23,14 @@ from .investigation import (
     TimelineEntry,
 )
 from .ioc import IOC
+from .knowledge import (
+    KnowledgeChunk,
+    KnowledgeResult,
+)
+from .phishing import (
+    EmailAuthenticationResult,
+    PhishingResult,
+)
 from .qa import QAResult
 from .threat_intel import ThreatIntelFinding, ThreatIntelResult
 from .triage import TriageResult
@@ -36,7 +45,9 @@ __all__ = [
     "AlertSource",
     "AlertType",
     "AssetContext",
+    "AuditEvent",
     "CaseStatus",
+    "EmailAuthenticationResult",
     "EscalationResult",
     "Evidence",
     "EvidenceType",
@@ -47,7 +58,10 @@ __all__ = [
     "InvestigationResult",
     "IOC",
     "IndicatorType",
+    "KnowledgeChunk",
+    "KnowledgeResult",
     "PermissionType",
+    "PhishingResult",
     "QAResult",
     "QAStatus",
     "Severity",

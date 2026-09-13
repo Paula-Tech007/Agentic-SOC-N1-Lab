@@ -1,14 +1,6 @@
 <div align="center">
-  <img
-    src="assets/banner-agentic-soc-n1-lab.png"
-    alt="Agentic SOC N1 Lab"
-    width="100%"
-  />
-</div>
 
-<br>
-
-<div align="center">
+<img src="assets/banner-agentic-soc-n1-lab.png" alt="Agentic SOC N1 Lab" width="100%">
 
 # 🛡️ Agentic SOC N1 Lab
 
@@ -20,8 +12,8 @@
 [![Ollama](https://img.shields.io/badge/Ollama-IA_Local-black)](https://ollama.com/)
 [![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
 [![SQLite](https://img.shields.io/badge/SQLite-Persistência-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![Pytest](https://img.shields.io/badge/Pytest-20_testes_aprovados-0A9EDC?logo=pytest&logoColor=white)](https://pytest.org/)
-![Fase](https://img.shields.io/badge/Fase-2_concluída-success)
+[![Pytest](https://img.shields.io/badge/Pytest-28_testes_aprovados-0A9EDC?logo=pytest&logoColor=white)](https://pytest.org/)
+![Fase](https://img.shields.io/badge/Fase_2-100%25_concluída-success)
 ![Status](https://img.shields.io/badge/Status-Em_desenvolvimento-orange)
 
 </div>
@@ -30,68 +22,62 @@
 
 ## 📌 Sobre o Projeto
 
-O **Agentic SOC N1 Lab** é um projeto de engenharia de segurança voltado à construção de uma arquitetura **multiagente para automação de operações de SOC N1**.
+O **Agentic SOC N1 Lab** é um laboratório de engenharia de segurança voltado à construção de uma arquitetura **multiagente para automação de operações de SOC N1**.
 
-A proposta é criar agentes especializados capazes de colaborar durante o ciclo de análise de um alerta de segurança, mantendo:
+O projeto combina agentes especializados, IA local, ferramentas defensivas, evidências, governança, auditoria e regras determinísticas para investigar alertas de segurança de forma controlada.
 
-- rastreabilidade;
-- evidências;
-- governança;
-- auditoria;
-- controle de permissões;
-- revisão de qualidade;
-- escalonamento para N2;
-- possibilidade de intervenção humana.
-
-O projeto segue um princípio central:
+A arquitetura segue um princípio central:
 
 > **A LLM interpreta. A ferramenta comprova.**
 
-O modelo de linguagem pode auxiliar na interpretação do contexto, porém nenhuma conclusão crítica deve depender apenas da resposta da IA.
+Nenhuma conclusão crítica deve depender somente da resposta de um modelo de linguagem.
+
+O sistema deve utilizar ferramentas autorizadas, evidências verificáveis, regras de governança e possibilidade de escalonamento humano.
 
 ---
 
 ## 🎯 Objetivo
 
-O objetivo principal é automatizar atividades repetitivas normalmente executadas pelo SOC N1, permitindo que os analistas humanos atuem em tarefas de maior complexidade.
+O objetivo é automatizar atividades repetitivas normalmente executadas pelo SOC N1, permitindo que analistas humanos concentrem seus esforços em tarefas de maior complexidade.
 
 O sistema deverá ser capaz de:
 
 - receber alertas;
 - normalizar eventos;
 - realizar triagem;
-- identificar contexto;
-- enriquecer IOCs;
-- consultar identidade;
-- consultar ativos;
-- buscar conhecimento;
-- montar uma investigação;
-- revisar a investigação;
+- enriquecer indicadores;
+- consultar Threat Intelligence;
+- analisar identidades;
+- analisar ativos;
+- investigar phishing;
+- consultar conhecimento via RAG;
+- consolidar evidências;
+- construir uma investigação;
+- revisar a qualidade da análise;
 - documentar o caso;
-- decidir fechamento ou escalonamento.
-
-Tudo isso com controle e rastreabilidade.
+- decidir fechamento ou escalonamento;
+- registrar todas as etapas em auditoria.
 
 ---
 
 ## 🧠 Arquitetura Multiagente
 
-O projeto possui atualmente **12 agentes especializados**.
+O projeto possui **12 agentes especializados**.
 
 | ID | Agente | Responsabilidade |
 |---|---|---|
-| **AG-01** | SOC Supervisor Agent | Coordena todo o fluxo da investigação |
+| **AG-01** | SOC Supervisor Agent | Coordena o fluxo completo da investigação |
 | **AG-02** | Alert Intake Agent | Recebe, valida e normaliza alertas |
-| **AG-03** | Triage Analyst Agent | Realiza triagem, classificação e severidade inicial |
-| **AG-04** | Threat Intelligence Agent | Enriquece indicadores e consulta fontes de inteligência |
-| **AG-05** | Identity Analyst Agent | Analisa contas, usuários, MFA e autenticação |
-| **AG-06** | Asset Context Agent | Analisa ativos, criticidade e contexto de infraestrutura |
+| **AG-03** | Triage Analyst Agent | Realiza triagem, classificação e severidade |
+| **AG-04** | Threat Intelligence Agent | Enriquece indicadores utilizando fontes autorizadas |
+| **AG-05** | Identity Analyst Agent | Analisa contas, autenticação, MFA e privilégios |
+| **AG-06** | Asset Context Agent | Analisa ativos, criticidade e contexto |
 | **AG-07** | Phishing Analyst Agent | Realiza análise especializada de phishing |
-| **AG-08** | Knowledge / RAG Agent | Consulta playbooks, políticas, runbooks e conhecimento |
-| **AG-09** | Incident Analyst Agent | Consolida evidências e produz a investigação |
+| **AG-08** | Knowledge / RAG Agent | Recupera playbooks, políticas, runbooks e conhecimento |
+| **AG-09** | Incident Analyst Agent | Consolida evidências e investigação |
 | **AG-10** | Reflection / QA Agent | Revisa evidências, inconsistências e qualidade |
 | **AG-11** | Case Management Agent | Mantém documentação e registros do caso |
-| **AG-12** | Escalation Agent | Decide fechamento, escalonamento ou espera humana |
+| **AG-12** | Escalation Agent | Aplica regras de fechamento e escalonamento |
 
 ---
 
@@ -130,9 +116,9 @@ flowchart TD
     L --> O[WAITING_HUMAN]
 ```
 
-O **SOC Supervisor Agent** coordena os agentes necessários para cada tipo de incidente.
+O **SOC Supervisor Agent** decide quais especialistas precisam participar de cada investigação.
 
-Nem todos os agentes precisam trabalhar em todos os casos.
+Nem todos os agentes precisam ser executados em todos os casos.
 
 ---
 
@@ -186,9 +172,9 @@ SKIPPED
 
 ## 🧩 CaseState
 
-O `CaseState` representa a **ficha viva do incidente**.
+O `CaseState` funciona como a **ficha viva do incidente**.
 
-Ele centraliza as informações produzidas pelos agentes durante a investigação.
+Ele concentra as informações produzidas durante toda a investigação.
 
 ```text
 Alert
@@ -205,11 +191,17 @@ Triage
 +
 Threat Intelligence
 +
+Phishing
++
+Knowledge / RAG
++
 Investigation
 +
 QA
 +
 Escalation
++
+Audit
 +
 Workflow
 =
@@ -218,38 +210,77 @@ CaseState
 
 Atualmente o `CaseState` possui suporte a:
 
-- validação de correlação;
+- validação de `correlation_id`;
 - controle de versão;
 - timestamps;
+- IOCs;
+- identidades;
+- ativos;
 - evidências;
-- estado do workflow;
-- proteção contra evidência duplicada;
+- phishing;
+- conhecimento/RAG;
+- investigação;
+- QA;
+- escalonamento;
+- workflow;
+- auditoria;
+- prevenção de evidência duplicada;
+- prevenção de auditoria duplicada;
 - serialização JSON;
-- desserialização;
 - persistência SQLite.
+
+---
+
+## 🔐 Imutabilidade
+
+A arquitetura protege informações que não devem ser alteradas silenciosamente durante uma investigação.
+
+### `raw_event`
+
+O evento bruto recebido pelo sistema é convertido para uma estrutura imutável.
+
+```text
+Evento recebido
+      ↓
+FrozenDict
+      ↓
+raw_event imutável
+```
+
+Isso ajuda a preservar o conteúdo original que iniciou a investigação.
+
+### Evidências
+
+As evidências são registros imutáveis.
+
+Depois que uma evidência é criada, seu conteúdo não pode ser modificado silenciosamente.
+
+### Auditoria
+
+Os eventos de auditoria também são imutáveis.
+
+O próprio objeto e seu `payload` interno ficam protegidos contra alteração posterior.
 
 ---
 
 ## 🔍 Modelo de Evidências
 
-As evidências são uma das partes mais importantes da arquitetura.
-
 Toda conclusão deve possuir rastreabilidade.
 
-Exemplos:
+Exemplos de fontes de evidência:
 
-- alerta;
-- IOC;
-- consulta de Threat Intelligence;
-- dados de identidade;
-- informações de ativos;
+- alertas;
+- IOCs;
+- Threat Intelligence;
+- identidade;
+- ativos;
+- e-mail;
 - logs;
-- retorno de ferramentas;
-- resultados de consultas;
-- conhecimento recuperado;
-- análise do incidente.
+- ferramentas;
+- conhecimento;
+- análise de incidente.
 
-Fluxo:
+Fluxo conceitual:
 
 ```text
 Informação observada
@@ -265,60 +296,138 @@ Informação observada
       Decisão
 ```
 
-As evidências são tratadas como registros imutáveis.
+---
 
-Uma evidência criada não deve ser silenciosamente alterada.
+## 📧 Análise de Phishing
+
+A Fase 2 inclui um schema específico para o futuro:
+
+```text
+AG-07 Phishing Analyst Agent
+```
+
+O resultado estruturado permite registrar:
+
+- remetente;
+- destinatários;
+- assunto;
+- URLs;
+- anexos;
+- hashes;
+- SPF;
+- DKIM;
+- DMARC;
+- indicadores suspeitos;
+- evidências;
+- classificação;
+- severidade;
+- confiança;
+- resumo da análise.
 
 ---
 
-## 🧪 Testes Automatizados
+## 📚 Knowledge / RAG
 
-O projeto possui atualmente:
-
-```text
-20 testes automatizados aprovados
-```
-
-Os testes verificam cenários positivos e negativos.
-
-Entre eles:
-
-- criação de alertas;
-- validação de schemas;
-- rejeição de confidence acima de 100;
-- imutabilidade de evidências;
-- consistência de `correlation_id`;
-- prevenção de evidência duplicada;
-- versionamento do `CaseState`;
-- serialização JSON;
-- desserialização JSON;
-- workflow dos agentes;
-- retry de QA;
-- escalonamento;
-- persistência SQLite;
-- rejeição de campos não previstos.
-
-Para executar todos os testes:
-
-```bash
-python -m pytest -q
-```
-
-Resultado atual:
+O projeto também possui contrato estruturado para o:
 
 ```text
-20 passed
+AG-08 Knowledge / RAG Agent
 ```
+
+A arquitetura exige que informações recuperadas tenham origem conhecida.
+
+Cada trecho recuperado registra:
+
+```text
+chunk_id
+document_name
+document_type
+section
+content
+similarity_score
+source_path
+metadata
+```
+
+Fluxo esperado:
+
+```text
+Consulta
+   ↓
+Busca semântica
+   ↓
+Trecho recuperado
+   ↓
+Documento + seção + score
+   ↓
+KnowledgeResult
+```
+
+Uma resposta de conhecimento não deve existir sem fonte recuperada.
+
+---
+
+## 🧾 Auditoria
+
+A arquitetura possui `AuditEvent` para registrar acontecimentos importantes.
+
+Exemplos:
+
+```text
+CASE_CREATED
+CASE_UPDATED
+AGENT_STARTED
+AGENT_COMPLETED
+TOOL_CALLED
+EVIDENCE_ADDED
+QA_REVIEWED
+DECISION_CREATED
+ERROR
+HUMAN_ACTION
+```
+
+Cada evento pode registrar:
+
+- `audit_id`;
+- `case_id`;
+- `correlation_id`;
+- tipo de evento;
+- tipo de ator;
+- identificador do ator;
+- ação;
+- status;
+- mensagem;
+- referências;
+- payload;
+- timestamp.
+
+### Append-only
+
+A auditoria segue filosofia **append-only**.
+
+```text
+Evento 1
+   ↓
+Evento 2
+   ↓
+Evento 3
+   ↓
+Evento 4
+```
+
+Eventos anteriores não são sobrescritos.
+
+IDs duplicados são rejeitados no `CaseState`.
 
 ---
 
 ## 💾 Persistência
 
-O projeto possui atualmente dois mecanismos de persistência.
+O projeto possui dois mecanismos principais de persistência.
 
 ### JSON
 
-Um `CaseState` completo pode ser transformado em JSON:
+Um `CaseState` completo pode ser serializado e restaurado:
 
 ```text
 CaseState
@@ -328,49 +437,58 @@ JSON
 CaseState
 ```
 
-Os incidentes armazenados em JSON ficam em:
+Arquivos operacionais ficam em:
 
 ```text
 storage/incidents/
 ```
 
+Esses arquivos não são versionados pelo Git.
+
 ---
 
 ### SQLite
 
-Também existe persistência utilizando SQLite.
-
-Banco padrão:
+O banco padrão é:
 
 ```text
 storage/database/agentic_soc.db
 ```
 
-O banco armazena informações como:
+A persistência atualmente inclui:
 
-- `case_id`;
+```text
+cases
+audit_events
+```
+
+A tabela `cases` mantém o estado atual do incidente.
+
+A tabela `audit_events` mantém o histórico append-only da auditoria.
+
+O banco também utiliza índices para facilitar consultas por:
+
 - `correlation_id`;
 - `alert_id`;
-- status do caso;
-- decisão final;
-- versão;
-- timestamps;
-- JSON completo do `CaseState`.
+- status;
+- `case_id`;
+- tipo de evento;
+- timestamp.
 
-Os arquivos operacionais não são versionados no Git.
+Arquivos SQLite operacionais são ignorados pelo Git.
 
 ---
 
 ## 🤖 Inteligência Artificial Local
 
-O laboratório utiliza atualmente o **Ollama** para execução local dos modelos.
+O laboratório utiliza **Ollama** para execução local dos modelos.
 
 | Função | Modelo |
 |---|---|
 | LLM / raciocínio dos agentes | `qwen3:4b-instruct` |
 | Embeddings / RAG | `embeddinggemma` |
 
-A utilização de modelos locais permite desenvolver e testar a arquitetura sem depender obrigatoriamente de APIs externas para o núcleo do laboratório.
+A execução local permite desenvolver e testar o núcleo da arquitetura sem depender obrigatoriamente de APIs externas.
 
 ---
 
@@ -386,36 +504,92 @@ A utilização de modelos locais permite desenvolver e testar a arquitetura sem 
 | SQLite | Persistência |
 | Pytest | Testes automatizados |
 | Git | Controle de versão |
-| GitHub | Versionamento do projeto |
-| Mermaid | Diagramas de arquitetura |
+| GitHub | Versionamento |
+| Mermaid | Diagramas |
 
 Integrações futuras incluem:
 
-- RAG;
-- MCP;
 - MISP;
 - Elastic;
+- Grafana;
 - APIs de segurança;
-- ferramentas SOC;
-- automação e orquestração.
+- RAG;
+- MCP;
+- ferramentas SOC.
+
+---
+
+## 🧪 Testes Automatizados
+
+O projeto possui atualmente:
+
+```text
+28 testes automatizados aprovados
+```
+
+Distribuição atual:
+
+```text
+8  testes de fundação
+20 testes da Fase 2
+-------------------
+28 testes totais
+```
+
+Os testes validam:
+
+- schemas;
+- enums;
+- limites de confiança;
+- rejeição de campos desconhecidos;
+- imutabilidade de evidências;
+- imutabilidade de `raw_event`;
+- imutabilidade de auditoria;
+- imutabilidade do payload da auditoria;
+- criação de PhishingResult;
+- Knowledge/RAG com fonte obrigatória;
+- consistência de `correlation_id`;
+- versionamento do CaseState;
+- prevenção de evidência duplicada;
+- prevenção de auditoria duplicada;
+- serialização JSON;
+- desserialização JSON;
+- workflow dos agentes;
+- QA e retry;
+- escalonamento;
+- persistência SQLite;
+- persistência SQLite de auditoria;
+- prevenção de duplicação de auditoria no banco.
+
+Executar os testes:
+
+```bash
+python -m pytest -q
+```
+
+Resultado atual esperado:
+
+```text
+28 passed
+```
 
 ---
 
 ## 🛡️ Segurança e Governança
 
-A arquitetura segue princípios defensivos.
-
-### Regras principais
+Princípios fundamentais:
 
 - **Deny by default**
 - **Least privilege**
 - **Evidência antes da conclusão**
 - **Dados de ferramentas acima de suposições da LLM**
+- **raw_event imutável**
 - **Evidências imutáveis**
-- **Auditoria**
+- **Auditoria imutável**
+- **Auditoria append-only**
 - **Execução limitada**
 - **Fail closed**
-- **Escalonamento humano disponível**
+- **Escalonamento humano**
 - **Sem shell irrestrito**
 - **Sem contenção crítica autônoma**
 
@@ -425,7 +599,7 @@ Uma resposta de LLM sozinha nunca deve ser considerada prova de comprometimento.
 
 ## ⛔ Restrições de Ações Autônomas
 
-O MVP atual não executa automaticamente ações críticas como:
+O MVP não executa automaticamente ações críticas como:
 
 ```text
 Troca de senha
@@ -448,41 +622,39 @@ ou:
 SIMULATED_ACTION
 ```
 
-A execução real depende de autorização e política organizacional.
+A execução real depende de autorização humana e política organizacional.
 
 ---
 
 ## 🚨 Decisão N1 / N2
 
-O fechamento automático pelo N1 deve ser conservador.
+O fechamento automático pelo N1 é conservador.
 
-Exemplo de critérios:
+Critérios previstos incluem:
 
-- confiança elevada;
+- confiança mínima elevada;
 - QA aprovado;
 - evidências suficientes;
 - playbook concluído;
 - ausência de comprometimento confirmado;
 - ausência de regra obrigatória de escalonamento.
 
-Situações que podem exigir escalonamento:
+Situações que podem exigir N2:
 
 - conta privilegiada;
 - ativo crítico;
 - IOC malicioso confirmado;
 - movimentação lateral;
-- possível exfiltração;
+- exfiltração;
 - comprometimento confirmado;
-- tipo de alerta não suportado;
-- falha do QA após limite de retries.
+- alerta não suportado;
+- falha de QA após limite de retries.
 
-As **hard rules** possuem prioridade sobre a interpretação da LLM.
+As **hard rules** possuem prioridade sobre interpretação da LLM.
 
 ---
 
 ## 📋 Tipos de Alertas Iniciais
-
-Atualmente previstos:
 
 ```text
 AUTH_BRUTE_FORCE
@@ -497,7 +669,7 @@ LATERAL_MOVEMENT_SUSPECTED
 DATA_EXFILTRATION_SUSPECTED
 ```
 
-Tipos não suportados devem ser escalados em vez de serem interpretados livremente.
+Alertas não suportados devem ser escalados em vez de interpretados livremente.
 
 ---
 
@@ -520,13 +692,36 @@ Agentic-SOC-N1-Lab/
 │   ├── case_management/
 │   └── escalation/
 │
+├── assets/
+│   └── banner-agentic-soc-n1-lab.png
+│
 ├── core/
 │   ├── config/
 │   ├── llm/
 │   ├── orchestrator/
 │   ├── permissions/
 │   ├── schemas/
+│   │   ├── alert.py
+│   │   ├── asset.py
+│   │   ├── audit.py
+│   │   ├── enums.py
+│   │   ├── escalation.py
+│   │   ├── evidence.py
+│   │   ├── identity.py
+│   │   ├── immutable.py
+│   │   ├── investigation.py
+│   │   ├── ioc.py
+│   │   ├── knowledge.py
+│   │   ├── phishing.py
+│   │   ├── qa.py
+│   │   ├── threat_intel.py
+│   │   ├── triage.py
+│   │   └── workflow.py
+│   │
 │   └── state/
+│       ├── case_state.py
+│       ├── database.py
+│       └── serialization.py
 │
 ├── docs/
 │   ├── ARCHITECTURE.md
@@ -572,13 +767,13 @@ Agentic-SOC-N1-Lab/
 
 | Fase | Escopo | Status |
 |---|---|---|
-| **Fase 0** | Arquitetura, governança e definição dos agentes | ✅ Concluída |
-| **Fase 1** | Fundação do projeto, IA local e configuração | ✅ Concluída |
-| **Fase 2** | Schemas, CaseState, persistência e testes | ✅ Concluída |
+| **Fase 0** | Escopo, arquitetura, governança e definição dos agentes | ✅ Concluída |
+| **Fase 1** | Fundação técnica, IA local e estrutura do projeto | ✅ Concluída |
+| **Fase 2** | Schemas, CaseState, imutabilidade, auditoria, persistência e testes | ✅ Concluída |
 | **Fase 3** | Runtime dos agentes e orquestração | ⏳ Planejada |
 | **Fase 4** | Ferramentas e integrações de segurança | ⏳ Planejada |
 | **Fase 5** | RAG e camada de conhecimento | ⏳ Planejada |
-| **Fase 6** | Integração MCP | ⏳ Planejada |
+| **Fase 6** | MCP | ⏳ Planejada |
 | **Fase 7** | Execução SOC multiagente ponta a ponta | ⏳ Planejada |
 
 Todas as fases representam **evoluções deste mesmo projeto e deste mesmo repositório**.
@@ -586,8 +781,6 @@ Todas as fases representam **evoluções deste mesmo projeto e deste mesmo repos
 ---
 
 ## 🧭 Filosofia da Arquitetura
-
-O projeto separa claramente três responsabilidades.
 
 ```text
 LLM
@@ -601,7 +794,7 @@ LLM
 FERRAMENTAS
 │
 ├── consultam sistemas
-├── buscam informações
+├── recuperam informações
 ├── validam fatos
 └── produzem evidências
 
@@ -610,11 +803,12 @@ GOVERNANÇA
 │
 ├── controla permissões
 ├── aplica hard rules
+├── registra auditoria
 ├── revisa decisões
 └── determina escalonamento
 ```
 
-Essa separação é fundamental para a arquitetura.
+A separação entre interpretação, comprovação e governança é fundamental para o projeto.
 
 ---
 
@@ -638,26 +832,32 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### Executar o projeto
+### Executar aplicação base
 
 ```bash
 python main.py
 ```
 
-### Executar os testes
+### Executar todos os testes
 
 ```bash
 python -m pytest -q
+```
+
+Resultado atual:
+
+```text
+28 passed
 ```
 
 ---
 
 ## ⚠️ Uso Defensivo
 
-Este projeto foi desenvolvido para:
+Este projeto é destinado a:
 
 - pesquisa defensiva em segurança;
-- laboratórios de SOC;
+- laboratórios SOC;
 - estudos de automação;
 - arquitetura de agentes de IA;
 - engenharia de segurança;

@@ -7,11 +7,17 @@ Estes testes validam:
 - enums;
 - limites de confidence;
 - imutabilidade das evidências;
+- imutabilidade do raw_event;
+- análise de phishing;
+- Knowledge / RAG com fonte obrigatória;
+- eventos de auditoria imutáveis;
 - integridade do CaseState;
 - prevenção de evidência duplicada;
+- prevenção de auditoria duplicada;
 - versionamento do estado;
 - serialização JSON;
 - persistência SQLite;
+- persistência SQLite da auditoria;
 - workflow dos agentes;
 - QA;
 - escalonamento.
@@ -438,3 +444,314 @@ def test_extra_fields_are_rejected() -> None:
             product="Lab-SIEM",
             unknown_field="not-allowed",
         )
+
+
+def test_raw_event_is_immutable() -> None:
+    """
+    O raw_event original não pode ser alterado após criação.
+    """
+
+    event = AlertEvent(
+        event_type=AlertType.SUSPICIOUS_LOGIN,
+        message="Suspicious login detected",
+        raw_event={
+            "username": "admin",
+            "details": {
+                "attempts": [1, 2, 3],
+            },
+        },
+    )
+
+    with pytest.raises(TypeError):
+        event.raw_event["username"] = "changed"
+
+    assert (
+        event.raw_event["details"]["attempts"]
+        == (1, 2, 3)
+    )
+
+
+def test_phishing_schema_creation() -> None:
+    """
+    O resultado de phishing deve preservar análise e evidências.
+    """
+
+    from core.schemas import (
+        EmailAuthenticationResult,
+        PhishingResult,
+    )
+
+    result = PhishingResult(
+        phishing_id="PHISH-TEST-0001",
+        alert_id="ALT-TEST-0001",
+        sender="sender@example.test",
+        recipients=[
+            "user@empresa.local",
+        ],
+        subject="Atualizacao urgente",
+        urls=[
+            "https://example.test/login",
+        ],
+        authentication=EmailAuthenticationResult(
+            spf="fail",
+            dkim="fail",
+            dmarc="fail",
+        ),
+        suspicious_indicators=[
+            "authentication_failed",
+            "suspicious_url",
+        ],
+        evidence_references=[
+            "EVID-TEST-0001",
+        ],
+        classification=FinalClassification.SUSPICIOUS,
+        severity=Severity.HIGH,
+        confidence=94,
+        summary="Indicadores consistentes com phishing.",
+    )
+
+    assert result.phishing_id == "PHISH-TEST-0001"
+    assert result.confidence == 94
+    assert result.authentication.spf == "fail"
+    assert result.classification == FinalClassification.SUSPICIOUS
+
+
+def test_knowledge_requires_source() -> None:
+    """
+    KnowledgeResult não pode existir sem fonte recuperada.
+    """
+
+    from core.schemas import KnowledgeResult
+
+    with pytest.raises(ValidationError):
+        KnowledgeResult(
+            knowledge_id="KNOW-INVALID",
+            alert_id="ALT-TEST-0001",
+            query="Como investigar o alerta?",
+            answer="Resposta sem fonte.",
+            retrieved_chunks=[],
+            confidence=90,
+        )
+
+
+def test_audit_event_is_immutable() -> None:
+    """
+    AuditEvent não pode ser alterado depois de criado.
+    """
+
+    from core.schemas import AuditEvent
+
+    audit = AuditEvent(
+        audit_id="AUDIT-IMMUTABLE-0001",
+        case_id="CASE-TEST-0001",
+        correlation_id="CORR-TEST-0001",
+        event_type="CASE_CREATED",
+        actor_type="SYSTEM",
+        actor_id="orchestrator",
+        action="create_case",
+    )
+
+    with pytest.raises(ValidationError):
+        audit.status = "FAILED"
+
+
+def test_audit_payload_is_immutable() -> None:
+    """
+    O payload interno da auditoria também deve ser imutável.
+    """
+
+    from core.schemas import AuditEvent
+
+    audit = AuditEvent(
+        audit_id="AUDIT-PAYLOAD-0001",
+        case_id="CASE-TEST-0001",
+        correlation_id="CORR-TEST-0001",
+        event_type="TOOL_CALLED",
+        actor_type="AGENT",
+        actor_id="AG-04",
+        action="lookup_ip",
+        payload={
+            "ip": "185.10.20.30",
+        },
+    )
+
+    with pytest.raises(TypeError):
+        audit.payload["ip"] = "8.8.8.8"
+
+
+def test_case_state_supports_phishing_knowledge_and_audit() -> None:
+    """
+    CaseState deve consolidar phishing, knowledge e auditoria.
+    """
+
+    from core.schemas import (
+        AuditEvent,
+        EmailAuthenticationResult,
+        KnowledgeChunk,
+        KnowledgeResult,
+        PhishingResult,
+    )
+
+    alert = Alert(
+        alert_id="ALT-ADHERENCE-0001",
+        correlation_id="CORR-ADHERENCE-0001",
+        source=AlertSource(
+            system="SIEM",
+        ),
+        event=AlertEvent(
+            event_type=AlertType.PHISHING,
+            message="Phishing detected",
+            raw_event={
+                "sender": "attacker@example.test",
+            },
+        ),
+        initial_severity=Severity.HIGH,
+    )
+
+    phishing = PhishingResult(
+        phishing_id="PHISH-ADHERENCE-0001",
+        alert_id="ALT-ADHERENCE-0001",
+        sender="attacker@example.test",
+        authentication=EmailAuthenticationResult(
+            spf="fail",
+            dkim="fail",
+            dmarc="fail",
+        ),
+        classification=FinalClassification.SUSPICIOUS,
+        severity=Severity.HIGH,
+        confidence=94,
+        summary="Indicadores consistentes com phishing.",
+    )
+
+    knowledge = KnowledgeResult(
+        knowledge_id="KNOW-ADHERENCE-0001",
+        alert_id="ALT-ADHERENCE-0001",
+        query="Como tratar phishing?",
+        answer="Seguir o playbook corporativo.",
+        retrieved_chunks=[
+            KnowledgeChunk(
+                chunk_id="CHUNK-ADHERENCE-0001",
+                document_name="Playbook Phishing",
+                document_type="playbook",
+                content=(
+                    "Validar remetente, URLs, anexos "
+                    "e autenticacao."
+                ),
+                similarity_score=0.95,
+            ),
+        ],
+        confidence=95,
+    )
+
+    case = CaseState(
+        case_id="CASE-ADHERENCE-0001",
+        correlation_id="CORR-ADHERENCE-0001",
+        alert=alert,
+        phishing=phishing,
+        knowledge=knowledge,
+    )
+
+    audit = AuditEvent(
+        audit_id="AUDIT-ADHERENCE-0001",
+        case_id="CASE-ADHERENCE-0001",
+        correlation_id="CORR-ADHERENCE-0001",
+        event_type="CASE_UPDATED",
+        actor_type="SYSTEM",
+        actor_id="orchestrator",
+        action="update_case",
+    )
+
+    case.add_audit_event(audit)
+
+    assert case.phishing is not None
+    assert case.knowledge is not None
+    assert case.phishing.phishing_id == "PHISH-ADHERENCE-0001"
+    assert case.knowledge.knowledge_id == "KNOW-ADHERENCE-0001"
+    assert case.audit[0].audit_id == "AUDIT-ADHERENCE-0001"
+    assert case.version == 2
+
+
+def test_case_state_rejects_duplicate_audit() -> None:
+    """
+    Um audit_id não pode ser adicionado duas vezes ao CaseState.
+    """
+
+    from core.schemas import AuditEvent
+
+    case = create_test_case()
+
+    audit = AuditEvent(
+        audit_id="AUDIT-DUPLICATE-0001",
+        case_id=case.case_id,
+        correlation_id=case.correlation_id,
+        event_type="TEST",
+        actor_type="SYSTEM",
+        actor_id="orchestrator",
+        action="test",
+    )
+
+    case.add_audit_event(audit)
+
+    with pytest.raises(
+        ValueError,
+        match="Evento de auditoria duplicado",
+    ):
+        case.add_audit_event(audit)
+
+
+def test_sqlite_audit_roundtrip(tmp_path) -> None:
+    """
+    Auditoria deve ser persistida no SQLite sem duplicação.
+    """
+
+    from core.schemas import AuditEvent
+    from core.state import load_audit_events_sqlite
+
+    database_path = (
+        tmp_path
+        / "phase2_audit_test.db"
+    )
+
+    case = create_test_case()
+
+    audit_1 = AuditEvent(
+        audit_id="AUDIT-SQL-TEST-0001",
+        case_id=case.case_id,
+        correlation_id=case.correlation_id,
+        event_type="CASE_CREATED",
+        actor_type="SYSTEM",
+        actor_id="orchestrator",
+        action="create_case",
+    )
+
+    audit_2 = AuditEvent(
+        audit_id="AUDIT-SQL-TEST-0002",
+        case_id=case.case_id,
+        correlation_id=case.correlation_id,
+        event_type="AGENT_STARTED",
+        actor_type="AGENT",
+        actor_id="AG-03",
+        action="start_triage",
+    )
+
+    case.add_audit_event(audit_1)
+    case.add_audit_event(audit_2)
+
+    save_case_state_sqlite(
+        case_state=case,
+        database_path=database_path,
+    )
+
+    save_case_state_sqlite(
+        case_state=case,
+        database_path=database_path,
+    )
+
+    audit_events = load_audit_events_sqlite(
+        case_id=case.case_id,
+        database_path=database_path,
+    )
+
+    assert len(audit_events) == 2
+    assert audit_events[0].audit_id == "AUDIT-SQL-TEST-0001"
+    assert audit_events[1].audit_id == "AUDIT-SQL-TEST-0002"
