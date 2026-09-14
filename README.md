@@ -771,7 +771,7 @@ Agentic-SOC-N1-Lab/
 | **Fase 1** | Fundação técnica, IA local e estrutura do projeto | ✅ Concluída |
 | **Fase 2** | Schemas, CaseState, imutabilidade, auditoria, persistência e testes | ✅ Concluída |
 | **Fase 3** | Runtime dos agentes e orquestração | ✅ Concluída |
-| **Fase 4** | Ferramentas e integrações de segurança | ⏳ Planejada |
+| **Fase 4** | Ferramentas e integrações de segurança | 🚧 Em andamento — Fase 4.0 concluída |
 | **Fase 5** | RAG e camada de conhecimento | ⏳ Planejada |
 | **Fase 6** | MCP | ⏳ Planejada |
 | **Fase 7** | Execução SOC multiagente ponta a ponta | ⏳ Planejada |
