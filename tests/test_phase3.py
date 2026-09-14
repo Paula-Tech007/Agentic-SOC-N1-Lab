@@ -562,7 +562,7 @@ def test_supervisor_routes_first_pending_agent() -> None:
         in case.workflow.completed_agents
     )
 
-    assert case.workflow.step_count == 3
+    assert case.workflow.step_count == 2
 
 
 def test_supervisor_stops_final_case() -> None:

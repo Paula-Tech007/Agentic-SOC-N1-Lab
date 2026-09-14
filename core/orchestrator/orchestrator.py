@@ -243,6 +243,14 @@ class SOCOrchestrator:
         """
         Executa um agente através do Runtime.
 
+        Regras de contagem:
+
+        - AG-01 e AG-12 pertencem ao plano de controle;
+        - AG-01 e AG-12 não consomem step_count;
+        - os demais agentes consomem step_count;
+        - uma execução operacional recusada por max_steps
+          não altera o CaseState.
+
         Depois da execução:
 
         1. valida a saída;
@@ -276,9 +284,65 @@ class SOCOrchestrator:
             ):
                 retry_count += 1
 
-        step_number = (
-            workflow.step_count + 1
+        control_plane_agents = {
+            "AG-01",
+            "AG-12",
+        }
+
+        consumes_operational_step = (
+            agent_id
+            not in control_plane_agents
         )
+
+        if consumes_operational_step:
+            step_number = (
+                workflow.step_count + 1
+            )
+        else:
+            step_number = min(
+                max(
+                    workflow.step_count,
+                    1,
+                ),
+                workflow.max_steps,
+            )
+
+        if (
+            consumes_operational_step
+            and step_number
+            > workflow.max_steps
+        ):
+            rejected_at = datetime.now(
+                timezone.utc
+            )
+
+            return AgentExecutionResult(
+                execution_id=(
+                    self._create_execution_id()
+                ),
+                agent_id=agent_id,
+                case_id=case_state.case_id,
+                correlation_id=(
+                    case_state.correlation_id
+                ),
+                status=AgentStatus.FAILED,
+                success=False,
+                output={},
+                evidence_references=(),
+                messages=(
+                    "Execução recusada antes de "
+                    "alterar o CaseState.",
+                ),
+                error=(
+                    "Limite máximo de passos "
+                    "excedido: "
+                    f"{step_number} > "
+                    f"{workflow.max_steps}."
+                ),
+                duration_ms=0.0,
+                started_at=rejected_at,
+                completed_at=rejected_at,
+            )
 
         request = AgentExecutionRequest(
             execution_id=self._create_execution_id(),
@@ -308,6 +372,9 @@ class SOCOrchestrator:
             step_number=step_number,
             retry_count=retry_count,
             started_at=started_at,
+            consume_step=(
+                consumes_operational_step
+            ),
         )
 
         result = self.runtime.execute(
@@ -2550,9 +2617,14 @@ class SOCOrchestrator:
         step_number: int,
         retry_count: int,
         started_at: datetime,
+        consume_step: bool = True,
     ) -> None:
         """
         Marca agente como RUNNING.
+
+        Agentes do plano de controle podem executar
+        sem consumir o orçamento operacional de
+        step_count.
         """
 
         workflow = case_state.workflow
@@ -2576,9 +2648,10 @@ class SOCOrchestrator:
             agent_id
         )
 
-        workflow.step_count = (
-            step_number
-        )
+        if consume_step:
+            workflow.step_count = (
+                step_number
+            )
 
         workflow.pending_agents = (
             self._remove_agent_id(
