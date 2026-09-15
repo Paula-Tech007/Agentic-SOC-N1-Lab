@@ -4,7 +4,7 @@ AG-06 — Asset Context Agent.
 Responsável por validar e consolidar contexto de ativos
 obtido por ferramentas autorizadas.
 
-Nesta fase, o agente NÃO consulta diretamente:
+O agente NÃO consulta diretamente:
 
 - CMDB;
 - EDR;
@@ -13,12 +13,23 @@ Nesta fase, o agente NÃO consulta diretamente:
 - scanners;
 - plataformas externas.
 
-As integrações reais serão implementadas posteriormente
-na camada de Tools / Permission Engine.
+As consultas externas são responsabilidade exclusiva da
+camada oficial de Tools / Permission Engine.
 
-Fluxo atual:
+Nesta fase, o AG-06 pode utilizar as ferramentas read-only:
 
-Resultado de ferramenta ou simulação controlada
+- asset.get_asset;
+- asset.get_ip_context;
+- asset.get_criticality;
+- asset.get_edr_status.
+
+Fluxo:
+
+Ferramenta autorizada
+        ↓
+ToolRuntime
+        ↓
+Resultado comprovado
         ↓
 AG-06 Asset Context
         ↓
@@ -64,11 +75,10 @@ class AssetContextAgent(BaseAgent):
     )
 
     allowed_tools: tuple[str, ...] = (
-        "lookup_asset",
-        "lookup_asset_criticality",
-        "lookup_asset_exposure",
-        "lookup_edr_status",
-        "lookup_asset_inventory",
+        "asset.get_asset",
+        "asset.get_ip_context",
+        "asset.get_criticality",
+        "asset.get_edr_status",
     )
 
     def run(
@@ -77,7 +87,7 @@ class AssetContextAgent(BaseAgent):
     ) -> AgentWorkResult:
         """
         Consolida informações de ativos recebidas
-        de ferramenta autorizada ou simulação controlada.
+        de ferramentas autorizadas.
         """
 
         snapshot = request.case_snapshot.to_dict()
