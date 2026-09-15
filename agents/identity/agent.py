@@ -4,20 +4,33 @@ AG-05 — Identity Analyst Agent.
 Responsável por validar e consolidar contexto de identidade
 obtido por ferramentas autorizadas.
 
-Nesta fase, o agente NÃO consulta diretamente:
+O agente NÃO consulta diretamente:
 
 - Active Directory;
 - Microsoft Entra ID;
 - LDAP;
 - IAM corporativo;
-- bancos de identidade.
+- bancos de identidade;
+- Elasticsearch.
 
-As integrações reais serão implementadas posteriormente
-na camada de Tools / Permission Engine.
+As consultas externas são responsabilidade exclusiva da
+camada oficial de Tools / Permission Engine.
 
-Fluxo atual:
+Nesta fase, o AG-05 pode utilizar as ferramentas read-only:
 
-Resultado de ferramenta ou simulação controlada
+- iam.get_user;
+- iam.get_account_status;
+- iam.get_mfa_status;
+- iam.get_group_membership;
+- elastic.search_events.
+
+Fluxo:
+
+Ferramenta autorizada
+        ↓
+ToolRuntime
+        ↓
+Resultado comprovado
         ↓
 AG-05 Identity Analyst
         ↓
@@ -63,11 +76,11 @@ class IdentityAnalystAgent(BaseAgent):
     )
 
     allowed_tools: tuple[str, ...] = (
-        "lookup_identity",
-        "lookup_account_status",
-        "lookup_mfa_status",
-        "lookup_identity_privileges",
-        "lookup_authentication_history",
+        "iam.get_user",
+        "iam.get_account_status",
+        "iam.get_mfa_status",
+        "iam.get_group_membership",
+        "elastic.search_events",
     )
 
     def run(
@@ -76,7 +89,7 @@ class IdentityAnalystAgent(BaseAgent):
     ) -> AgentWorkResult:
         """
         Consolida informações de identidade recebidas
-        de ferramenta autorizada ou simulação controlada.
+        de ferramentas autorizadas.
         """
 
         snapshot = request.case_snapshot.to_dict()
