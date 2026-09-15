@@ -4,6 +4,14 @@
 
 <br>
 
+> AGENTIC_SOC_N1_LAB
+
+SECURITY OPERATIONS // MULTI-AGENT AI // EVIDENCE-DRIVEN
+
+<br>
+
+
+
 
 
 
@@ -14,205 +22,252 @@
 
 <br>
 
-SOC N1 multiagente com IA local, ferramentas defensivas, evidências verificáveis, governança e escalonamento humano.
-
-A LLM interpreta. A ferramenta comprova.
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  AI INTERPRETS  //  TOOLS VERIFY  //  GOVERNANCE DECIDES  //  HUMAN CAN ACT │
+└──────────────────────────────────────────────────────────────────────────────┘
 
 </div>
 
-📌 Visão rápida
+01 // SYSTEM DASHBOARD
 
-Item
+<table>
+<tr>
+<td width="25%" align="center">
+<strong>ARCHITECTURE</strong><br><br>
+<code>MULTI-AGENT</code>
+</td>
+<td width="25%" align="center">
+<strong>AGENTS</strong><br><br>
+<code>12 OFFICIAL</code>
+</td>
+<td width="25%" align="center">
+<strong>TEST SUITE</strong><br><br>
+<code>151 PASSED</code>
+</td>
+<td width="25%" align="center">
+<strong>SECURITY MODE</strong><br><br>
+<code>READ_ONLY</code>
+</td>
+</tr>
+<tr>
+<td align="center">
+<strong>CURRENT PHASE</strong><br><br>
+<code>4.4 COMPLETE</code>
+</td>
+<td align="center">
+<strong>INTEGRATIONS</strong><br><br>
+<code>4 ACTIVE</code>
+</td>
+<td align="center">
+<strong>CRITICAL ACTIONS</strong><br><br>
+<code>0 AUTONOMOUS</code>
+</td>
+<td align="center">
+<strong>NEXT TARGET</strong><br><br>
+<code>PHASE 4.5</code>
+</td>
+</tr>
+</table>
 
-Estado atual
+SYSTEM        Agentic SOC N1 Lab
+MISSION       Automate SOC N1 safely
+STATE         ONLINE / DEVELOPMENT
+EVIDENCE      REQUIRED
+AUDIT         APPEND-ONLY
+PRIVILEGE     LEAST PRIVILEGE
+FAILURE MODE  FAIL CLOSED
+NEXT MODULE   Email / Phishing Metadata
 
-Arquitetura
+02 // MISSION
 
-Multiagente
-
-Agentes oficiais
-
-12
-
-Fase concluída
-
-Fase 4.4 — Asset / CMDB Read-Only
-
-Testes automatizados
-
-151 passed
-
-Integrações concluídas
-
-MISP · Elastic · Identity/IAM · Asset/CMDB
-
-Política de integração
-
-READ_ONLY
-
-Ações críticas autônomas
-
-Nenhuma
-
-Escalonamento humano
-
-Disponível
-
-Próxima etapa
-
-Fase 4.5 — Email / Phishing Metadata Read-Only
-
-🔎 Sobre o projeto
-
-O Agentic SOC N1 Lab é um laboratório de engenharia de segurança voltado à automação controlada de atividades operacionais de um SOC N1.
-
-A arquitetura combina agentes especializados, IA local, regras determinísticas, ferramentas defensivas, enriquecimento de contexto, persistência, auditoria e revisão de qualidade.
-
-O objetivo é reduzir tarefas repetitivas do N1 sem entregar autoridade irrestrita ao modelo de linguagem.
-
-O laboratório foi projetado para
+O Agentic SOC N1 Lab é um laboratório de engenharia de segurança criado para implementar um SOC N1 multiagente, com agentes especializados trabalhando de forma coordenada para:
 
 receber e normalizar alertas;
 
-classificar eventos e severidade;
+executar triagem;
 
-enriquecer IOCs;
+enriquecer evidências;
 
-consultar Threat Intelligence;
+consultar ferramentas de segurança;
 
-analisar identidades, MFA e privilégios;
+investigar identidade e ativos;
 
-recuperar contexto de ativos;
-
-investigar phishing;
+analisar phishing;
 
 consultar conhecimento interno;
 
-consolidar evidências;
+consolidar investigação;
 
-produzir uma investigação estruturada;
-
-revisar a qualidade da análise;
+revisar qualidade;
 
 documentar o caso;
 
-fechar no N1 ou escalar para N2/humano;
+decidir fechamento N1 ou escalonamento;
 
-registrar toda a execução em auditoria.
+registrar todo o processo em auditoria.
 
-🧠 Arquitetura geral
+Regra central: a LLM pode interpretar contexto, mas uma ferramenta ou evidência verificável deve sustentar a conclusão.
 
-flowchart TD
-    A[Alerta / Evento] --> B[AG-02 Alert Intake]
-    B --> C[AG-03 Triage]
-    C --> S[AG-01 SOC Supervisor]
+03 // THREAT-TO-DECISION PIPELINE
 
-    S --> D[AG-04 Threat Intelligence]
-    S --> E[AG-05 Identity]
-    S --> F[AG-06 Asset Context]
-    S --> G[AG-07 Phishing]
-    S --> H[AG-08 Knowledge / RAG]
+flowchart LR
+    A[ALERT / EVENT] --> B[AG-02<br/>ALERT INTAKE]
+    B --> C[AG-03<br/>TRIAGE]
+    C --> S[AG-01<br/>SOC SUPERVISOR]
 
-    D --> I[AG-09 Incident Analyst]
-    E --> I
-    F --> I
-    G --> I
-    H --> I
+    S --> TI[AG-04<br/>THREAT INTEL]
+    S --> ID[AG-05<br/>IDENTITY]
+    S --> AS[AG-06<br/>ASSET]
+    S --> PH[AG-07<br/>PHISHING]
+    S --> KG[AG-08<br/>KNOWLEDGE / RAG]
 
-    I --> J[AG-10 Reflection / QA]
+    TI --> INV[AG-09<br/>INCIDENT ANALYST]
+    ID --> INV
+    AS --> INV
+    PH --> INV
+    KG --> INV
 
-    J -->|Reprovado| S
-    J -->|Aprovado| K[AG-11 Case Management]
+    INV --> QA[AG-10<br/>REFLECTION / QA]
 
-    K --> L[AG-12 Escalation]
+    QA -->|REJECTED| S
+    QA -->|APPROVED| CM[AG-11<br/>CASE MANAGEMENT]
 
-    L --> M[CLOSED_N1]
-    L --> N[ESCALATED_N2]
-    L --> O[WAITING_HUMAN]
+    CM --> ESC[AG-12<br/>ESCALATION]
 
-O fluxo automático completo Supervisor → Especialistas → Supervisor será consolidado na Fase 7.
+    ESC --> N1[CLOSED_N1]
+    ESC --> N2[ESCALATED_N2]
+    ESC --> HU[WAITING_HUMAN]
 
-🤖 Os 12 agentes
+O loop multiagente automático completo Supervisor → Especialistas → Supervisor pertence à Fase 7.
 
-ID
+04 // AGENT MATRIX
 
-Agente
+NODE
 
-Responsabilidade
+AGENTE
+
+FUNÇÃO OPERACIONAL
 
 AG-01
 
-SOC Supervisor Agent
+SOC Supervisor
 
-Coordenação e roteamento da investigação
+Coordena fluxo, roteamento e decisões de controle
 
 AG-02
 
-Alert Intake Agent
+Alert Intake
 
-Recebimento, validação e normalização
+Recebe, valida e normaliza alertas
 
 AG-03
 
-Triage Analyst Agent
+Triage Analyst
 
-Classificação, severidade e triagem
+Classifica alerta, severidade e contexto inicial
 
 AG-04
 
-Threat Intelligence Agent
+Threat Intelligence
 
-Enriquecimento de IOCs e Threat Intelligence
+Consulta e consolida Threat Intelligence
 
 AG-05
 
-Identity Analyst Agent
+Identity Analyst
 
-Usuário, conta, MFA, grupos e privilégios
+Analisa usuário, conta, MFA e grupos
 
 AG-06
 
-Asset Context Agent
+Asset Context
 
-Ativo, IP, criticidade e EDR
+Recupera ativo, IP, criticidade e EDR
 
 AG-07
 
-Phishing Analyst Agent
+Phishing Analyst
 
-Metadados, cabeçalhos, autenticação e anexos
+Analisa metadados, headers, autenticação e anexos
 
 AG-08
 
-Knowledge / RAG Agent
+Knowledge / RAG
 
-Políticas, playbooks, runbooks e conhecimento
+Recupera políticas, playbooks e runbooks
 
 AG-09
 
-Incident Analyst Agent
+Incident Analyst
 
-Consolidação das evidências e investigação
+Consolida evidências e investigação
 
 AG-10
 
-Reflection / QA Agent
+Reflection / QA
 
-Revisão, lacunas, inconsistências e qualidade
+Revisa qualidade, lacunas e inconsistências
 
 AG-11
 
-Case Management Agent
+Case Management
 
-Histórico e documentação do caso
+Mantém histórico e documentação do caso
 
 AG-12
 
-Escalation Agent
+Escalation
 
-Fechamento N1, N2 ou ação humana
+Fecha N1, escala N2 ou aguarda humano
 
-🔄 Ciclo de vida do caso
+05 // CASE STATE CORE
+
+┌─────────────┐
+│    ALERT    │
+└──────┬──────┘
+       │
+       ├── IOCs
+       ├── Identity Context
+       ├── Asset Context
+       ├── Evidence
+       ├── Triage
+       ├── Threat Intelligence
+       ├── Phishing
+       ├── Knowledge / RAG
+       ├── Investigation
+       ├── QA
+       ├── Escalation
+       ├── Audit
+       └── Workflow
+                │
+                ▼
+           ┌───────────┐
+           │ CaseState │
+           └───────────┘
+
+O CaseState é a ficha viva da investigação.
+
+Ele mantém:
+
+case_id;
+
+correlation_id;
+
+versionamento;
+
+timestamps;
+
+evidências;
+
+resultados dos agentes;
+
+estados do workflow;
+
+auditoria;
+
+dados consolidados da investigação.
+
+06 // WORKFLOW STATES
 
 flowchart LR
     A[RECEIVED] --> B[NORMALIZING]
@@ -226,317 +281,243 @@ flowchart LR
     I --> J[CLOSED_N1]
     I --> K[ESCALATED_N2]
 
-Estados auxiliares:
+Auxiliary states
 
 WAITING_DATA · WAITING_HUMAN · RETRYING · FAILED · CANCELLED
 
-Estados de execução dos agentes:
+Agent execution states
 
 PENDING · RUNNING · COMPLETED · FAILED · SKIPPED
 
-🧩 CaseState
+07 // EVIDENCE PRIORITY
 
-O CaseState funciona como a ficha viva da investigação.
+╔═══════════════════════════════╗
+║          HARD RULES           ║
+╠═══════════════════════════════╣
+║           TOOL DATA           ║
+╠═══════════════════════════════╣
+║           EVIDENCE            ║
+╠═══════════════════════════════╣
+║     CONSOLIDATED CONTEXT      ║
+╠═══════════════════════════════╣
+║      LLM INTERPRETATION       ║
+╚═══════════════════════════════╝
 
-Ele concentra os dados produzidos por todo o pipeline:
+Fontes de evidência
 
-Alert
-  + IOCs
-  + Identity Context
-  + Asset Context
-  + Evidence
-  + Triage
-  + Threat Intelligence
-  + Phishing
-  + Knowledge / RAG
-  + Investigation
-  + QA
-  + Escalation
-  + Audit
-  + Workflow
-  = CaseState
+SOURCE
 
-Principais características:
+PURPOSE
 
-case_id e correlation_id;
+ALERT
 
-versionamento;
+Evento original
 
-timestamps;
+MISP
 
-serialização;
+Threat Intelligence
 
-persistência;
+ELASTIC
 
-prevenção de evidência duplicada;
+Alertas, eventos e documentos
 
-prevenção de auditoria duplicada;
+IAM
 
-rastreabilidade ponta a ponta.
+Usuário, MFA, grupos e status
 
-🧾 Evidência antes da conclusão
+ASSET / CMDB
 
-Toda conclusão relevante deve estar associada a dados verificáveis.
+Ativo, IP, criticidade e EDR
 
-HARD RULES
-    >
-TOOL DATA
-    >
-EVIDENCE
-    >
-CONSOLIDATED CONTEXT
-    >
-LLM INTERPRETATION
+EMAIL
 
-Fontes previstas e implementadas ao longo do projeto:
+Metadados e autenticação
 
-alerta original;
+RAG
 
-MISP;
+Políticas, playbooks e runbooks
 
-Elastic;
+AUDIT
 
-IAM;
+Rastreabilidade da execução
 
-Asset / CMDB;
+08 // SECURITY CONTROL PLANE
 
-e-mail;
+<table>
+<tr>
+<td width="50%">
 
-logs;
+ACCESS CONTROL
 
-RAG;
+deny-by-default;
 
-investigação consolidada.
+least privilege;
 
-Uma resposta isolada de LLM nunca é considerada evidência suficiente de comprometimento.
+autorização por agente;
 
-🔐 Segurança e governança
+catálogo oficial de tools;
 
-A arquitetura utiliza princípios de segurança desde a fundação:
+rotas explicitamente permitidas;
 
-Controle
+ferramentas proibidas bloqueadas.
 
-Aplicação
+</td>
+<td width="50%">
 
-Deny by default
+EXECUTION CONTROL
 
-O acesso só existe quando explicitamente autorizado
-
-Least privilege
-
-Cada agente possui somente as ferramentas necessárias
-
-Evidence first
-
-Evidência antes da conclusão
-
-Fail closed
-
-Falhas não liberam acesso adicional
-
-Bounded loops
-
-Loops e retries possuem limites
-
-Immutable raw event
-
-O evento bruto não pode ser alterado silenciosamente
-
-Append-only audit
-
-Eventos anteriores de auditoria não são sobrescritos
-
-Human escalation
-
-Casos sensíveis podem aguardar decisão humana
-
-No unrestricted shell
-
-Agentes não recebem shell irrestrito
-
-No critical autonomy
-
-Ações críticas reais continuam bloqueadas
-
-Ações críticas não executadas automaticamente
-
-troca real de senha;
-
-desativação ou exclusão de conta;
-
-bloqueio real de IP;
-
-alteração real de firewall;
-
-isolamento real de endpoint;
-
-encerramento real de processo;
-
-exclusão real de arquivo;
-
-abertura automática de URL;
-
-execução ou download automático de anexo.
-
-Quando necessário, o sistema trabalha apenas com:
-
-RECOMMENDED_ACTION ou SIMULATED_ACTION
-
-🛠️ Fase 4 — Tools e integrações
-
-A Fase 4 introduz a camada governada de acesso a sistemas externos.
-
-✅ Fase 4.0 — Fundação de Tools
-
-Implementado:
-
-catálogo oficial de ferramentas;
-
-autorização;
-
-registry;
-
-runtime;
+fail closed;
 
 timeout;
 
 retries limitados;
 
+bounded loops;
+
 validação de binding;
 
-fail closed;
+sem shell irrestrito.
 
-evidência obrigatória;
+</td>
+</tr>
+<tr>
+<td>
 
-bloqueio de ferramentas proibidas.
+DATA INTEGRITY
 
-Modos definidos:
+raw_event imutável;
+
+evidências imutáveis;
+
+auditoria append-only;
+
+versionamento do caso;
+
+rastreabilidade ponta a ponta.
+
+</td>
+<td>
+
+HUMAN CONTROL
+
+escalonamento N2;
+
+espera por humano;
+
+hard rules;
+
+nenhuma contenção crítica autônoma;
+
+QA antes da decisão final.
+
+</td>
+</tr>
+</table>
+
+09 // CRITICAL ACTION LOCK
+
+[LOCKED]  iam.reset_password
+[LOCKED]  iam.disable_user
+[LOCKED]  iam.delete_user
+
+[LOCKED]  network.block_ip
+[LOCKED]  network.unblock_ip
+
+[LOCKED]  firewall.add_rule
+[LOCKED]  firewall.delete_rule
+[LOCKED]  firewall.modify_rule
+
+[LOCKED]  endpoint.isolate_host
+[LOCKED]  endpoint.kill_process
+[LOCKED]  endpoint.delete_file
+
+[LOCKED]  email.open_url
+[LOCKED]  email.execute_attachment
+[LOCKED]  email.download_attachment
+
+O laboratório trabalha, quando necessário, apenas com:
+
+RECOMMENDED_ACTION
+SIMULATED_ACTION
+
+Nenhuma ação crítica real é executada automaticamente.
+
+10 // TOOLING LAYER
+
+PHASE 4.0 // FOUNDATION
+
+Tool Catalog
+Authorization
+Tool Registry
+Tool Runtime
+Timeout
+Retry Control
+Fail Closed
+Evidence Requirement
+Forbidden Tool Guardrails
+
+Modes:
 
 READ_ONLY · RECOMMENDED_ACTION · SIMULATED_ACTION
 
-✅ Fase 4.1 — MISP Read-Only
-
-Ferramentas:
+PHASE 4.1 // MISP
 
 misp.search_ioc
 misp.get_event
 misp.get_attribute
 
-Controles:
+Status: READ_ONLY ✅
 
-API key;
-
-rotas permitidas;
-
-validação de resposta;
-
-timeout;
-
-tratamento de erros;
-
-nenhuma operação de escrita.
-
-✅ Fase 4.2 — Elastic Read-Only
-
-Ferramentas:
+PHASE 4.2 // ELASTIC
 
 elastic.search_alerts
 elastic.search_events
 elastic.get_document
 
-Controles:
+Status: READ_ONLY ✅
 
-índices autorizados;
-
-rotas controladas;
-
-endpoints de escrita bloqueados;
-
-timeout;
-
-retries limitados;
-
-fail closed.
-
-✅ Fase 4.3 — Identity / IAM Read-Only
-
-Ferramentas:
+PHASE 4.3 // IDENTITY / IAM
 
 iam.get_user
 iam.get_account_status
 iam.get_mfa_status
 iam.get_group_membership
 
-Contexto recuperado:
+Status: READ_ONLY ✅
 
-usuário;
-
-status da conta;
-
-MFA;
-
-grupos;
-
-informações de identidade.
-
-✅ Fase 4.4 — Asset / CMDB Read-Only
-
-Ferramentas:
+PHASE 4.4 // ASSET / CMDB
 
 asset.get_asset
 asset.get_ip_context
 asset.get_criticality
 asset.get_edr_status
 
-Contexto recuperado:
+Status: READ_ONLY ✅
 
-ativo;
-
-hostname;
-
-IP;
-
-criticidade;
-
-sistema operacional;
-
-exposição;
-
-gerenciamento;
-
-status de EDR;
-
-metadados adicionais.
-
-O AG-06 Asset Context Agent utiliza somente os IDs oficiais da camada de ferramentas.
-
-⏭️ Fase 4.5 — Email / Phishing Metadata Read-Only
-
-Próxima integração:
+PHASE 4.5 // EMAIL / PHISHING
 
 email.get_message_metadata
 email.get_headers
 email.get_authentication_results
 email.get_attachment_metadata
 
-Objetivo:
+Status: NEXT ⏭️
 
-fornecer evidências ao AG-07 Phishing Analyst Agent sem abrir URLs, executar anexos ou baixar conteúdo perigoso.
+O objetivo é fornecer evidências ao AG-07 Phishing Analyst sem abrir URLs, executar anexos ou baixar conteúdo perigoso.
 
-🔒 Fluxo de autorização de ferramentas
+11 // TOOL EXECUTION PATH
 
 flowchart LR
-    A[Agent] --> B[ToolRequest]
-    B --> C{Authorization}
-    C -->|Denied| D[Fail Closed]
-    C -->|Allowed| E[ToolRegistry]
-    E --> F[ToolRuntime]
-    F --> G[Read-Only Integration]
-    G --> H[ToolResult + Evidence]
+    A[AGENT] --> B[ToolRequest]
+    B --> C{AUTHORIZATION}
+    C -->|DENIED| X[FAIL CLOSED]
+    C -->|ALLOWED| D[ToolRegistry]
+    D --> E[ToolRuntime]
+    E --> F[READ-ONLY INTEGRATION]
+    F --> G[ToolResult]
+    G --> H[Evidence]
 
-🧾 Auditoria
-
-Eventos relevantes podem ser registrados como:
+12 // AUDIT STREAM
 
 CASE_CREATED
 CASE_UPDATED
@@ -551,35 +532,24 @@ HUMAN_ACTION
 
 A auditoria registra:
 
-identificador do evento;
+audit_id
+case_id
+correlation_id
+actor
+action
+status
+message
+references
+payload
+timestamp
 
-caso;
+Eventos anteriores não são sobrescritos.
 
-correlação;
+13 // ESCALATION LOGIC
 
-ator;
+CLOSED_N1
 
-ação;
-
-status;
-
-mensagem;
-
-referências;
-
-payload;
-
-timestamp.
-
-A filosofia é append-only.
-
-🚨 Escalonamento
-
-O fechamento automático no N1 é propositalmente conservador.
-
-Fechamento N1
-
-Pode ocorrer quando houver:
+Requisitos conservadores:
 
 confiança elevada;
 
@@ -589,11 +559,13 @@ evidências suficientes;
 
 playbook concluído;
 
-ausência de regra obrigatória de escalonamento;
+sem regra obrigatória de escalonamento;
 
-ausência de comprometimento crítico confirmado.
+sem comprometimento crítico confirmado.
 
-Escalonamento prioritário
+ESCALATED_N2
+
+Prioridade de escalonamento em casos como:
 
 conta privilegiada;
 
@@ -603,104 +575,85 @@ IOC malicioso confirmado;
 
 movimentação lateral;
 
-exfiltração de dados;
+exfiltração;
 
 comprometimento confirmado;
 
 alerta não suportado;
 
-falha de QA após o limite de retries.
+QA falhando após o limite de retries.
 
-As hard rules possuem prioridade sobre interpretações da LLM.
-
-📋 Catálogo inicial de alertas
-
-Categoria
-
-Status
+14 // ALERT CATALOG
 
 AUTH_BRUTE_FORCE
-
-Suportado
-
 SUSPICIOUS_LOGIN
-
-Suportado
-
 CREDENTIAL_EXPOSURE
-
-Suportado
-
 PHISHING
-
-Suportado
-
 MALWARE_DETECTION
-
-Suportado
-
 SUSPICIOUS_POWERSHELL
-
-Suportado
-
 MALICIOUS_IOC
-
-Suportado
-
 PRIVILEGED_ACCOUNT_ACTIVITY
-
-Suportado
-
 LATERAL_MOVEMENT_SUSPECTED
-
-Suportado
-
 DATA_EXFILTRATION_SUSPECTED
-
-Suportado
-
 UNSUPPORTED
 
-Escalonar
+UNSUPPORTED não é interpretado livremente: deve ser escalado.
 
-💾 Persistência
+15 // STORAGE
+
+<table>
+<tr>
+<td width="50%">
 
 JSON
 
 O CaseState pode ser serializado e restaurado.
 
-Incidentes operacionais:
-
 storage/incidents/
 
-SQLite
+</td>
+<td width="50%">
+
+SQLITE
 
 Banco local padrão:
 
-storage/database/agentic_soc.db
+storage/database/
+agentic_soc.db
 
 Estruturas principais:
 
 cases
 audit_events
 
-🧠 Inteligência Artificial local
+</td>
+</tr>
+</table>
 
-O laboratório foi projetado para trabalhar com Ollama, permitindo:
+16 // LOCAL AI
 
-desenvolvimento local;
+O laboratório foi preparado para uso de IA local com Ollama.
 
-testes sem dependência obrigatória de APIs externas;
+Benefícios:
 
-maior controle dos dados do laboratório;
+execução local;
 
-experimentação com modelos abertos.
+menor dependência de APIs externas;
 
-A camada de IA permanece separada da camada de comprovação por ferramentas.
+experimentação com modelos abertos;
 
-📚 Knowledge / RAG
+maior controle sobre dados do laboratório;
 
-Estrutura prevista:
+separação entre interpretação e comprovação.
+
+LLM  → interpreta
+TOOL → verifica
+RULE → governa
+HUMAN → decide quando necessário
+
+17 // KNOWLEDGE / RAG
+
+Estrutura preparada:
 
 knowledge/
 ├── mitre/
@@ -708,113 +661,115 @@ knowledge/
 ├── policies/
 └── runbooks/
 
-Cada conteúdo recuperado deverá possuir origem rastreável.
+Metadados esperados:
 
-A implementação completa do RAG pertence à Fase 5.
+chunk_id
+document_name
+document_type
+section
+content
+similarity_score
+source_path
+metadata
 
-🔌 MCP
+Implementação completa: PHASE 5
 
-Estrutura prevista:
+18 // MCP
+
+Estrutura planejada:
 
 mcp/
 ├── client/
 └── server/
 
-A implementação completa está planejada para a Fase 6.
+Implementação completa: PHASE 6
 
-🧪 Testes automatizados
+19 // TEST MATRIX
 
-Conjunto
+MODULE
 
-Testes
+TESTS
 
-Fundação
+STATUS
+
+Foundation
 
 8
 
-Fase 2
+✅
+
+Phase 2
 
 20
 
-Fase 3
+✅
+
+Phase 3
 
 19
 
-Fase 4.0 — Tools
+✅
+
+Phase 4.0 — Tools
 
 20
 
-Fase 4.1 — MISP
+✅
+
+Phase 4.1 — MISP
 
 17
 
-Fase 4.2 — Elastic
+✅
+
+Phase 4.2 — Elastic
 
 19
 
-Fase 4.3 — Identity / IAM
+✅
+
+Phase 4.3 — Identity / IAM
 
 24
 
-Fase 4.4 — Asset / CMDB
+✅
+
+Phase 4.4 — Asset / CMDB
 
 24
 
-Total
+✅
+
+TOTAL
 
 151
 
-Resultado atual:
-
-151 passed
-
-Executar:
+PASS
 
 python -m pytest -q
 
-⚙️ Tecnologias
+Expected:
 
-Tecnologia
+151 passed
 
-Utilização
+20 // TECHNOLOGY STACK
 
-Python 3.14
+<table>
+<tr>
+<td align="center"><strong>Python</strong><br><code>3.14</code></td>
+<td align="center"><strong>Pydantic</strong><br><code>v2</code></td>
+<td align="center"><strong>Ollama</strong><br><code>Local AI</code></td>
+<td align="center"><strong>SQLite</strong><br><code>Storage</code></td>
+</tr>
+<tr>
+<td align="center"><strong>HTTPX</strong><br><code>HTTP Client</code></td>
+<td align="center"><strong>Pytest</strong><br><code>Testing</code></td>
+<td align="center"><strong>Git</strong><br><code>Versioning</code></td>
+<td align="center"><strong>GitHub</strong><br><code>Repository</code></td>
+</tr>
+</table>
 
-Desenvolvimento principal
-
-Pydantic v2
-
-Schemas e validação
-
-Ollama
-
-IA local
-
-SQLite
-
-Persistência
-
-HTTPX
-
-Clientes HTTP controlados
-
-Pytest
-
-Testes automatizados
-
-Git
-
-Controle de versão
-
-GitHub
-
-Repositório e documentação
-
-Mermaid
-
-Diagramas de arquitetura
-
-Dependências principais:
+Dependencies:
 
 pydantic==2.13.5
 ollama==0.6.2
@@ -822,7 +777,7 @@ numpy==2.5.3
 pytest==9.1.1
 httpx==0.28.1
 
-📂 Estrutura do projeto
+21 // PROJECT TREE
 
 Agentic-SOC-N1-Lab/
 │
@@ -882,7 +837,7 @@ Agentic-SOC-N1-Lab/
 ├── requirements.txt
 └── README.md
 
-▶️ Executando o projeto
+22 // BOOT SEQUENCE
 
 git clone https://github.com/Paula-Tech007/Agentic-SOC-N1-Lab.git
 cd Agentic-SOC-N1-Lab
@@ -893,23 +848,17 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 python -m pytest -q
 
-Resultado esperado no estado atual:
+23 // ENVIRONMENT
 
-151 passed
+Nunca versionar credenciais reais.
 
-🔑 Variáveis de ambiente
-
-As credenciais devem permanecer fora do Git.
-
-MISP
-
+# MISP
 MISP_URL
 MISP_API_KEY
 MISP_VERIFY_SSL
 MISP_TIMEOUT_SECONDS
 
-Elastic
-
+# ELASTIC
 ELASTIC_URL
 ELASTIC_API_KEY
 ELASTIC_VERIFY_SSL
@@ -917,191 +866,73 @@ ELASTIC_TIMEOUT_SECONDS
 ELASTIC_ALERTS_INDEX
 ELASTIC_EVENTS_INDEX
 
-Identity / IAM
-
+# IDENTITY / IAM
 IAM_URL
 IAM_API_TOKEN
 IAM_PROVIDER
 IAM_VERIFY_SSL
 IAM_TIMEOUT_SECONDS
 
-Asset / CMDB
-
+# ASSET / CMDB
 ASSET_URL
 ASSET_API_TOKEN
 ASSET_PROVIDER
 ASSET_VERIFY_SSL
 ASSET_TIMEOUT_SECONDS
 
-Nunca publique tokens, API keys, senhas ou arquivos .env reais no repositório.
+24 // ROADMAP
 
-🗺️ Roadmap
-
-Fase
-
-Escopo
-
-Status
-
-0
-
-Escopo, arquitetura e governança
-
-✅ Concluída
-
-1
-
-Fundação técnica
-
-✅ Concluída
-
-2
-
-Schemas, CaseState, persistência e auditoria
-
-✅ Concluída
-
-3
-
-Agentes, runtime e orquestração
-
-✅ Concluída
-
-4.0
-
-Fundação de Tools
-
-✅ Concluída
-
-4.1
-
-MISP Read-Only
-
-✅ Concluída
-
-4.2
-
-Elastic Read-Only
-
-✅ Concluída
-
-4.3
-
-Identity / IAM Read-Only
-
-✅ Concluída
-
-4.4
-
-Asset / CMDB Read-Only
-
-✅ Concluída
-
-4.5
-
-Email / Phishing Metadata Read-Only
-
-⏭️ Próxima
-
-5
-
-Knowledge / RAG
-
-🗓️ Planejada
-
-6
-
-MCP
-
-🗓️ Planejada
-
-7
-
-SOC Multiagente End-to-End
-
-🗓️ Planejada
+[██████████] PHASE 0    Scope / Architecture / Governance
+[██████████] PHASE 1    Technical Foundation
+[██████████] PHASE 2    Schemas / State / Persistence / Audit
+[██████████] PHASE 3    Agents / Runtime / Orchestration
+[██████████] PHASE 4.0  Tools Foundation
+[██████████] PHASE 4.1  MISP Read-Only
+[██████████] PHASE 4.2  Elastic Read-Only
+[██████████] PHASE 4.3  Identity / IAM Read-Only
+[██████████] PHASE 4.4  Asset / CMDB Read-Only
+[░░░░░░░░░░] PHASE 4.5  Email / Phishing Metadata
+[░░░░░░░░░░] PHASE 5    Knowledge / RAG
+[░░░░░░░░░░] PHASE 6    MCP
+[░░░░░░░░░░] PHASE 7    Multi-Agent SOC End-to-End
 
 Todas as fases são evoluções do mesmo projeto e do mesmo repositório.
 
-<details>
-<summary><strong>📐 Decisões de arquitetura</strong></summary>
+25 // CURRENT CHECKPOINT
 
-<br>
+╔════════════════════════════════════════════════════╗
+║ AGENTIC SOC N1 LAB // CHECKPOINT                   ║
+╠════════════════════════════════════════════════════╣
+║ PHASE 4.4                         COMPLETE         ║
+║ ASSET / CMDB                      READ_ONLY        ║
+║ MISP                              READ_ONLY        ║
+║ ELASTIC                           READ_ONLY        ║
+║ IDENTITY / IAM                    READ_ONLY        ║
+║ AG-06                             ALIGNED          ║
+║ TOOL GOVERNANCE                   ACTIVE           ║
+║ TEST SUITE                        151 PASSED        ║
+║ NEXT                              PHASE 4.5        ║
+╚════════════════════════════════════════════════════╝
 
-Separação de responsabilidade
-
-LLM
-├── interpreta
-├── resume
-├── correlaciona contexto
-└── propõe conclusões
-
-TOOLS
-├── consultam sistemas
-├── recuperam dados
-├── verificam fatos
-└── produzem evidências
-
-GOVERNANÇA
-├── controla permissões
-├── aplica hard rules
-├── limita loops e retries
-├── exige rastreabilidade
-└── permite escalonamento humano
-
-Filosofia operacional
-
-A arquitetura não delega autoridade irrestrita ao modelo.
-
-A IA participa da interpretação.
-
-As ferramentas comprovam fatos.
-
-A governança determina o que pode ou não ser executado.
-
-</details>
-
-<details>
-<summary><strong>📎 Imutabilidade e integridade</strong></summary>
-
-<br>
-
-raw_event
-
-O evento bruto recebido é preservado em estrutura imutável.
-
-Evidências
-
-Evidências são tratadas como registros imutáveis.
-
-Auditoria
-
-Eventos de auditoria seguem modelo append-only.
-
-Isso reduz o risco de alterações silenciosas durante a investigação.
-
-</details>
-
-⚠️ Aviso
+26 // SAFETY NOTICE
 
 Este repositório é um laboratório educacional e defensivo de Segurança Cibernética.
 
-As integrações atuais foram construídas para consulta controlada, validação de arquitetura e estudo de automação defensiva.
+As integrações atuais foram implementadas para consulta controlada, validação de arquitetura e estudo de automação defensiva.
 
 O projeto não representa autorização para execução automática de ações críticas em ambientes de produção.
 
 <div align="center">
 
-👩‍💻 Paula Sabino
+// PAULA SABINO
 
 Cybersecurity · SOC · Security Automation · AI for Security
 
-GitHub · LinkedIn
+
+
 
 <br>
 
-🛡️ Agentic SOC N1 Lab
-
-AI assists. Evidence validates. Governance decides.
+DEFENSIVE AUTOMATION // VERIFIABLE EVIDENCE // CONTROLLED AI
 
 </div>
