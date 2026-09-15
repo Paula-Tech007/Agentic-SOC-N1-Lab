@@ -873,7 +873,7 @@ O objetivo não é fornecer capacidade ofensiva autônoma.
 
 Segurança Cibernética • Automação de Segurança • IA Agêntica • SOC
 
-GitHub: [@Paula-Tech007](https://github.com/Paula-Tech007)
+
 
 ---
 
