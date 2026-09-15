@@ -160,6 +160,8 @@ flowchart TD
     ESC --> N1[CLOSED_N1]
     ESC --> N2[ESCALATED_N2]
     ESC --> HUM[WAITING_HUMAN]
+
+
     🔄 Ciclo de Vida do Caso
 
 Estados principais:
@@ -199,6 +201,8 @@ RUNNING
 COMPLETED
 FAILED
 SKIPPED
+
+
 🧩 CaseState
 
 O CaseState funciona como a ficha viva da investigação.
@@ -257,6 +261,8 @@ versionamento;
 timestamps;
 serialização;
 persistência.
+
+
 🔐 Segurança e Governança
 
 A arquitetura utiliza princípios defensivos desde a fundação.
@@ -280,6 +286,8 @@ QA obrigatório
 Escalonamento humano
 Sem shell irrestrito
 Sem contenção crítica autônoma
+
+
 🧰 Fase 4 — Tools e Integrações
 
 A Fase 4 estabeleceu a infraestrutura controlada de ferramentas utilizadas pelos agentes.
@@ -398,6 +406,7 @@ operações de escrita       BLOQUEADAS
 
 A integração fornece somente dados defensivos e metadados para o AG-07 Phishing Analyst Agent.
 
+
 ⛔ Ações Críticas Bloqueadas
 
 O laboratório não autoriza automaticamente:
@@ -431,6 +440,7 @@ SIMULATED_ACTION
 
 Nenhuma contenção crítica real é executada automaticamente.
 
+
 📚 Fase 5 — Knowledge / RAG Local
 
 A Fase 5 implementa a camada real de recuperação de conhecimento do projeto.
@@ -455,6 +465,8 @@ Etapa	Função	Status
 5.6	Integração RAG → AG-08	✅
 5.7	Testes formais	✅
 🔄 Pipeline do RAG
+
+
 📥 Ingestão Segura
 
 O loader permite somente arquivos autorizados dentro de knowledge/.
@@ -476,6 +488,8 @@ arquivos vazios são rejeitados;
 arquivos muito grandes são rejeitados;
 conteúdo deve utilizar UTF-8;
 nenhuma execução de arquivo ocorre.
+
+
 ✂️ Chunking
 
 A camada de chunking:
@@ -495,6 +509,8 @@ Chunk size	1200
 Chunk overlap	200
 Top-K	5
 Similaridade mínima	0.25
+
+
 🧬 Embeddings
 
 O projeto utiliza:
@@ -513,6 +529,8 @@ booleanos;
 NaN;
 infinito;
 dimensões inconsistentes.
+
+
 🗃️ Índice Vetorial Local
 
 O índice utiliza formato:
@@ -573,6 +591,8 @@ não inventa evidências;
 respeita dimensão vetorial;
 respeita score mínimo;
 retorna fontes conhecidas.
+
+
 🔗 Integração com AG-08
 
 A integração final utiliza:
@@ -608,6 +628,8 @@ confiança;
 evidência;
 fonte;
 chunk.
+
+
 🔍 Modelo de Evidências
 
 Toda conclusão deve possuir rastreabilidade.
@@ -639,6 +661,8 @@ Informação observada
  Reflection / QA
         ↓
       Decisão
+
+
 🧾 Auditoria
 
 A arquitetura utiliza AuditEvent.
@@ -662,7 +686,9 @@ append-only
 
 Eventos anteriores não são sobrescritos.
 
+
 💾 Persistência
+
 JSON
 
 Um CaseState pode ser serializado e restaurado.
@@ -683,6 +709,7 @@ audit_events
 
 Os arquivos operacionais de banco não são versionados no Git.
 
+
 🤖 Inteligência Artificial Local
 
 O laboratório foi projetado para utilizar IA local por meio do Ollama.
@@ -698,6 +725,8 @@ maior controle sobre dados;
 experimentação com modelos abertos;
 menor dependência de APIs externas;
 separação entre interpretação e comprovação.
+
+
 ⚙️ Tecnologias
 Tecnologia	Uso
 Python 3.14	Desenvolvimento principal
@@ -712,6 +741,8 @@ Pytest 9.1.1	Testes automatizados
 Git	Versionamento
 GitHub	Repositório
 Mermaid	Diagramas
+
+
 🧪 Testes Automatizados
 
 O projeto possui atualmente:
@@ -766,6 +797,8 @@ retrieval;
 integração RAG → AG-08;
 guardrails;
 fail-closed.
+
+
 📂 Estrutura Atual
 Agentic-SOC-N1-Lab/
 │
@@ -859,6 +892,8 @@ Agentic-SOC-N1-Lab/
 ├── main.py
 ├── requirements.txt
 └── README.md
+
+
 🗺️ Roadmap
 Fase	Escopo	Status
 Fase 0	Escopo, arquitetura e governança	✅ Concluída
@@ -870,6 +905,7 @@ Fase 5	Knowledge / RAG local	✅ Concluída
 Fase 6	MCP	⏳ Próxima etapa
 Fase 7	SOC multiagente ponta a ponta	⏳ Planejada
 Todas as fases são evoluções do mesmo projeto e do mesmo repositório.
+
 
 🚀 Executando o Projeto
 
@@ -897,6 +933,8 @@ python -m pytest -q
 Resultado atual:
 
 205 passed
+
+
 ⚠️ Uso Defensivo
 
 Este repositório é um laboratório educacional e defensivo de Segurança Cibernética.
