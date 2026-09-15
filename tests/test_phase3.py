@@ -18,7 +18,7 @@ Estes testes validam:
 - fail-closed do Supervisor;
 - análise defensiva do AG-07 Phishing;
 - rejeição de alerta não phishing pelo AG-07;
-- allowlist conceitual de ferramentas;
+- allowlist oficial de ferramentas de Email / Phishing;
 - hard rules do AG-12 Escalation;
 - fechamento automático conservador N1;
 - decisão WAITING_HUMAN.
@@ -904,35 +904,78 @@ def test_phishing_agent_rejects_non_phishing_alert() -> None:
 
 def test_phishing_agent_tool_allowlist() -> None:
     """
-    AG-07 deve permitir apenas ferramentas declaradas.
+    AG-07 deve permitir somente as ferramentas
+    oficiais de Email / Phishing autorizadas.
     """
 
     agent = PhishingAnalystAgent()
 
     assert (
         agent.can_use_tool(
-            "read_email_metadata"
+            "email.get_message_metadata"
         )
         is True
     )
 
     assert (
         agent.can_use_tool(
-            "read_email_authentication"
+            "email.get_headers"
         )
         is True
     )
 
     assert (
         agent.can_use_tool(
-            "open_url"
+            "email.get_authentication_results"
+        )
+        is True
+    )
+
+    assert (
+        agent.can_use_tool(
+            "email.get_attachment_metadata"
+        )
+        is True
+    )
+
+    assert (
+        agent.can_use_tool(
+            "email.open_url"
         )
         is False
     )
 
     assert (
         agent.can_use_tool(
-            "execute_attachment"
+            "email.execute_attachment"
+        )
+        is False
+    )
+
+    assert (
+        agent.can_use_tool(
+            "email.download_attachment"
+        )
+        is False
+    )
+
+    assert (
+        agent.can_use_tool(
+            "read_email_metadata"
+        )
+        is False
+    )
+
+    assert (
+        agent.can_use_tool(
+            "read_email_authentication"
+        )
+        is False
+    )
+
+    assert (
+        agent.can_use_tool(
+            "read_attachment_metadata"
         )
         is False
     )

@@ -70,13 +70,10 @@ class PhishingAnalystAgent(BaseAgent):
     )
 
     allowed_tools: tuple[str, ...] = (
-        "read_case_context",
-        "read_email_metadata",
-        "read_email_authentication",
-        "read_url_reputation",
-        "read_attachment_metadata",
-        "read_hash_reputation",
-        "read_evidence",
+        "email.get_message_metadata",
+        "email.get_headers",
+        "email.get_authentication_results",
+        "email.get_attachment_metadata",
     )
 
     def run(
