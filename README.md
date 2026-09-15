@@ -912,14 +912,18 @@ simulações controladas.
 
 O projeto não representa autorização para executar ações críticas automaticamente em ambientes reais.
 
-👩‍💻 Autora
+# 👩‍💻 Autora
 
-Paula Sabino
+**Paula Sabino**
 
 Segurança Cibernética • SOC • Automação de Segurança • IA aplicada à Segurança
 
-GitHub: @Paula-Tech007
+---
 
-<p align="center"> <strong>🛡️ Agentic SOC N1 Lab</strong> </p> <p align="center"> Construindo um SOC multiagente auditável, governado e orientado por evidências. </p> ```
+<p align="center">
+  <strong>🛡️ Agentic SOC N1 Lab</strong>
+</p>
 
-Esse modelo mantém o README limpo e profissional, mas agora mostra de forma correta o que já existe no projeto: a Fase 4 completa, a Fase 5 completa, o RAG real, as integrações e os 205 testes.
+<p align="center">
+  Construindo um SOC multiagente auditável, governado e orientado por evidências.
+</p>
