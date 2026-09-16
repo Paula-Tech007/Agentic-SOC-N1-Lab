@@ -28,19 +28,8 @@
 
 <p align="center">
 
-
-
-
-
-
-
-
-
-
-
-
-
 </p>
+
 
 📌 Visão Geral
 
@@ -59,10 +48,6 @@ integrações de segurança;
 análise baseada em evidências;
 
 RAG local;
-
-MCP local e read-only;
-
-orquestração E2E controlada;
 
 regras determinísticas;
 
@@ -84,119 +69,61 @@ Nenhuma conclusão crítica deve depender exclusivamente da resposta de um model
 
 O sistema prioriza informações verificáveis, evidências, dados de ferramentas e regras de governança.
 
+
 📊 Status Atual
 
-Item
+| Item | Estado |
 
-Estado
+|---|---|
 
-Projeto
+| Projeto | Agentic SOC N1 Lab |
 
-Agentic SOC N1 Lab
+| Arquitetura | Multiagente |
 
-Arquitetura
+| Agentes oficiais | 12 |
 
-Multiagente
+| Fase atual concluída | Fase 7 — SOC Multiagente Ponta a Ponta |
 
-Agentes oficiais
+| Integrações concluídas | MISP, Elastic, IAM, Asset/CMDB e Email |
 
-12
+| Knowledge / RAG | ✅ Implementado |
 
-Fase atual concluída
+| Embeddings | ✅ Local com Ollama |
 
-Fase 7 — SOC multiagente ponta a ponta
+| Índice vetorial | ✅ JSON local |
 
-Integrações concluídas
+| Retrieval | ✅ Similaridade cosseno |
 
-MISP, Elastic, IAM, Asset/CMDB e Email
+| Integração RAG → AG-08 | ✅ Implementada |
 
-Knowledge / RAG
+| MCP Foundation | ✅ Fase 6.0 concluída |
 
-✅ Implementado
+| MCP Client Local | ✅ Fase 6.1 concluída |
 
-Embeddings
+| Tools MCP governadas | 18 |
 
-✅ Local com Ollama
+| Transporte MCP | STDIO / LOCAL_ONLY |
 
-Índice vetorial
+| Política MCP | READ_ONLY / FAIL_CLOSED |
 
-✅ JSON local
+| Orquestração E2E | ✅ Implementada |
 
-Retrieval
+| Runner E2E | ✅ Implementado |
 
-✅ Similaridade cosseno
+| Retry / loops | ✅ Limitados e governados |
 
-Integração RAG → AG-08
+| Testes automatizados | 321 passed |
 
-✅ Implementada
+| Ações críticas autônomas | 0 |
 
-MCP SDK
+| Política das integrações | READ_ONLY |
 
-✅ 2.2.0
+| Escalonamento humano | ✅ Disponível |
 
-Namespace MCP
+| Roadmap principal | Fases 0–7 concluídas |
 
-✅ soc_mcp
+| Repositório | Projeto único / evolução contínua |
 
-MCP Server
-
-✅ Implementado
-
-MCP Client local controlado
-
-✅ Implementado
-
-Tools MCP governadas
-
-18
-
-Transporte MCP
-
-STDIO
-
-Política MCP
-
-LOCAL_ONLY / READ_ONLY / FAIL_CLOSED
-
-Orquestração E2E
-
-✅ Implementada
-
-Runner E2E controlado
-
-✅ Implementado
-
-Retry / loops
-
-✅ Limitados e governados
-
-Testes automatizados
-
-321 passed
-
-Ações críticas autônomas
-
-0
-
-Política atual das integrações
-
-READ_ONLY
-
-Escalonamento humano
-
-✅ Disponível
-
-Roadmap principal
-
-Fases 0–7 concluídas
-
-Próxima evolução
-
-Hardening, observabilidade e simulações E2E reais
-
-Repositório
-
-Projeto único / evolução contínua
 
 🎯 Objetivo
 
@@ -240,7 +167,8 @@ decidir fechamento ou escalonamento;
 
 registrar auditoria.
 
-# 🧠 Arquitetura Multiagente
+
+🧠 Arquitetura Multiagente
 
 O projeto possui 12 agentes especializados.
 
@@ -271,6 +199,7 @@ O projeto possui 12 agentes especializados.
 | AG-11 | Case Management Agent | Mantém documentação e histórico |
 
 | AG-12 | Escalation Agent | Fecha N1, escala N2 ou aguarda humano |
+
 
 🏗️ Arquitetura Geral
 
@@ -395,59 +324,59 @@ Ele concentra:
 
 Alert
 
-\+
++
 
 IOCs
 
-\+
++
 
 Identidades
 
-\+
++
 
 Ativos
 
-\+
++
 
 Evidências
 
-\+
++
 
 Triage
 
-\+
++
 
 Threat Intelligence
 
-\+
++
 
 Phishing
 
-\+
++
 
 Knowledge / RAG
 
-\+
++
 
 Investigation
 
-\+
++
 
 QA
 
-\+
++
 
 Escalation
 
-\+
++
 
 Audit
 
-\+
++
 
 Workflow
 
-\=
+=
 
 CaseState
 
@@ -793,6 +722,7 @@ Etapa Função   Status
 
 5.7   Testes formais ✅
 
+
 🔄 Pipeline do RAG
 
 
@@ -929,6 +859,7 @@ sem serviço em nuvem obrigatório.
 
 O arquivo de índice gerado durante execução não é versionado no Git.
 
+
 🔎 Retrieval
 
 A busca semântica utiliza:
@@ -1043,9 +974,30 @@ chunk.
 
 ## 🔌 Fase 6 — MCP
 
-A Fase 6 implementou a camada MCP defensiva, local e governada do projeto sem substituir o `ToolRuntime`.
+A **Fase 6** implementou a camada MCP do Agentic SOC N1 Lab de forma local, defensiva e governada, preservando o princípio central do projeto:
 
-Fluxo:
+> **A LLM interpreta. A ferramenta comprova.**
+
+O MCP não substitui os controles internos. O **ToolRuntime continua soberano**, e nenhuma ferramenta pode contornar `ToolPolicy`, permissões por agente ou regras de governança.
+
+
+### 6.0 — Fundação MCP Read-Only
+
+Foram implementados:
+
+- namespace oficial `soc_mcp`;
+- contratos e configuração MCP;
+- registry MCP;
+- servidor MCP local;
+- bridge MCP → ToolRuntime;
+- transporte `STDIO`;
+- execução `LOCAL_ONLY`;
+- política `READ_ONLY`;
+- comportamento `FAIL_CLOSED`;
+- bloqueio de transporte de rede;
+- bloqueio de ações críticas;
+- contexto de agente/caso/correlação controlado pelo servidor;
+- 18 ferramentas defensivas governadas.
 
 ```text
 AGENTE
@@ -1060,151 +1012,117 @@ ToolRuntime
    ↓
 ToolPolicy / Permissions
    ↓
-ToolResult / Evidence
+ToolResult
+   ↓
+Evidence
 
-Fase 6.0 — Fundação MCP Read-Only
+6.1 — MCP Client Local Controlado
 
-namespace oficial soc_mcp;
+O cliente MCP local:
 
-configuração e contratos MCP;
+conecta somente ao servidor MCP local;
 
-registry de tools MCP;
+lista apenas ferramentas publicadas e autorizadas;
 
-bridge MCP → ToolRuntime;
+executa somente operações defensivas/read-only;
 
-servidor MCP local;
+rejeita ferramentas não publicadas antes da chamada ao SDK;
 
-transporte stdio;
+não permite ao cliente definir livremente agent_id, case_id ou correlation_id;
 
-local_only=True;
+respeita o contexto definido pelo servidor;
 
-read_only=True;
+encerra a sessão de forma controlada.
 
-fail_closed=True;
+As ações críticas permanecem fora do catálogo autorizado.
 
-transporte de rede bloqueado;
 
-ações críticas bloqueadas;
 
-contexto agent_id, case_id e correlation_id vinculado pelo servidor;
+🔁 Fase 7 — SOC Multiagente Ponta a Ponta
 
-18 tools defensivas governadas.
+A Fase 7 integrou os agentes e componentes existentes em um fluxo E2E controlado, auditável e orientado por evidências.
 
-Fase 6.1 — MCP Client local controlado
+7.1 — Fundação E2E Controlada
 
-contratos do cliente MCP;
+Snapshot controlado, próximo agente pendente, estados terminais, bootstrap oficial pelo AG-02 e fail-closed para agentes desconhecidos.
 
-conexão local ao MCP Server;
+7.2 — Supervisor Automático
 
-listagem somente das tools autorizadas/publicadas;
+O AG-01 SOC Supervisor seleciona e valida o especialista da etapa, respeitando o workflow oficial.
 
-execução read-only;
+7.3 — Enriquecimento Automático
 
-contexto do caso não selecionável pelo cliente;
+Coordena AG-04, AG-05, AG-06, AG-07 e AG-08, respeitando a ordem do workflow.
 
-bloqueio fail-closed de tools não publicadas;
+7.4 — Incident Analyst
 
-fechamento limpo de sessão;
+O AG-09 consolida evidências e constrói a investigação estruturada.
 
-testes formais do cliente MCP.
+7.5 — Reflection / QA + Retry
 
-O MCP não substitui nem contorna ToolRuntime, ToolPolicy ou as permissões por agente.
+O AG-10 revisa qualidade, inconsistências e lacunas, podendo solicitar retry controlado apenas para agentes autorizados.
 
-🔁 Fase 7 — SOC multiagente ponta a ponta
+7.6 — Case Management
 
-A Fase 7 integrou as camadas existentes em um fluxo E2E controlado.
+O AG-11 consolida documentação, histórico, evidências e estado do caso.
 
+7.7 — Escalation / Finalização
+
+O AG-12 finaliza o fluxo em:
+
+CLOSED_N1
+ESCALATED_N2
+WAITING_HUMAN
+
+7.8 — Runner E2E Integrado
+
+O Phase7E2ERunner integra o workflow:
+
+Alerta
+   ↓
 AG-02 Alert Intake
-        ↓
+   ↓
 AG-03 Triage
-        ↓
+   ↓
 AG-01 Supervisor
-        ↓
+   ↓
 AG-04 / AG-05 / AG-06 / AG-07 / AG-08
-        ↓
+   ↓
 AG-09 Incident Analyst
-        ↓
+   ↓
 AG-10 Reflection / QA
-        ↓
-retry controlado, quando necessário
-        ↓
+   ↓
+Retry controlado quando necessário
+   ↓
 AG-11 Case Management
-        ↓
+   ↓
 AG-12 Escalation
-        ↓
+   ↓
 CLOSED_N1 / ESCALATED_N2 / WAITING_HUMAN
 
-Etapa
+Guardrails mantidos:
 
-Escopo
+deny by default;
 
-Status
+least privilege;
 
-7.1
+fail closed;
 
-Fundação E2E controlada
+ToolRuntime soberano;
 
-✅
+MCP subordinado à ToolPolicy;
 
-7.2
+permissões por agente;
 
-Supervisor automático
+retries e loops limitados;
 
-✅
+nenhuma contenção crítica autônoma;
 
-7.3
+humano/N2 sempre disponível;
 
-Enriquecimento automático
+auditoria e rastreabilidade.
 
-✅
 
-7.4
-
-Incident Analyst
-
-✅
-
-7.5
-
-Reflection / QA + retry
-
-✅
-
-7.6
-
-Case Management
-
-✅
-
-7.7
-
-Escalation / finalização
-
-✅
-
-7.8
-
-Runner E2E integrado
-
-✅
-
-Guardrails:
-
-Supervisor continua responsável pelo roteamento;
-
-Runtime e ToolRuntime continuam soberanos;
-
-agentes desconhecidos falham fechado;
-
-retries possuem targets controlados;
-
-loops possuem limite defensivo;
-
-estados terminais encerram a execução;
-
-nenhuma contenção crítica real é executada automaticamente;
-
-humano/N2 permanece disponível.
 
 🔍 Modelo de Evidências
 
@@ -1380,37 +1298,87 @@ O projeto possui atualmente:
 
 321 testes automatizados aprovados
 
-Principais blocos cobertos:
+Módulo
 
-Bloco
+Testes
 
 Status
 
-Fundação, schemas, estado e persistência
+Fundação
+
+8
 
 ✅
 
-Agentes e orquestração base
+Fase 2
+
+20
 
 ✅
 
-Tools e integrações defensivas
+Fase 3
+
+19
 
 ✅
 
-Knowledge / RAG
+Fase 4.0 — Tools
+
+20
 
 ✅
 
-MCP Foundation
+Fase 4.1 — MISP
+
+17
 
 ✅
 
-MCP Client local controlado
+Fase 4.2 — Elastic
+
+19
+
+✅
+
+Fase 4.3 — Identity / IAM
+
+24
+
+✅
+
+Fase 4.4 — Asset / CMDB
+
+24
+
+✅
+
+Fase 4.5 — Email / Phishing
+
+24
+
+✅
+
+Fase 5 — Knowledge / RAG
+
+30
+
+✅
+
+Fase 6 — MCP
+
+45
 
 ✅
 
 Fase 7 — E2E
+
+71
+
+✅
+
+TOTAL
+
+321
 
 ✅
 
@@ -1422,7 +1390,8 @@ Resultado esperado:
 
 321 passed
 
-Os testes cobrem schemas, imutabilidade, CaseState, auditoria, persistência, agentes, orquestração, permissions, ToolRuntime, integrações defensivas, RAG, MCP Server, MCP Client, Supervisor, enriquecimento, Incident Analyst, Reflection/QA, retry controlado, Case Management, Escalation, Runner E2E controlado, guardrails, fail-closed e limites de loop.
+Os testes cobrem schemas, estado, persistência, agentes, ToolRuntime, integrações defensivas, RAG, MCP Server, MCP Client, Supervisor, enriquecimento, Incident Analyst, Reflection/QA, retry controlado, Case Management, Escalation, Runner E2E, guardrails e fail-closed.
+
 
 📂 Estrutura Atual
 
@@ -1430,6 +1399,7 @@ Agentic-SOC-N1-Lab/
 │
 ├── agents/
 ├── assets/
+│   └── banner-agentic-soc-n1-lab.png
 ├── core/
 │   ├── config/
 │   ├── llm/
@@ -1449,15 +1419,33 @@ Agentic-SOC-N1-Lab/
 ├── knowledge/
 ├── rag/
 ├── soc_mcp/
+│   ├── config.py
+│   ├── contracts.py
+│   ├── registry.py
 │   ├── client/
+│   │   ├── contracts.py
+│   │   └── local.py
 │   └── server/
+│       ├── app.py
+│       └── bridge.py
 ├── simulations/
 ├── storage/
 ├── tests/
+│   ├── test_phase6_mcp.py
+│   ├── test_phase6_1_mcp_client.py
+│   ├── test_phase7_e2e.py
+│   ├── test_phase7_2_supervisor.py
+│   ├── test_phase7_3_enrichment.py
+│   ├── test_phase7_4_incident.py
+│   ├── test_phase7_5_reflection.py
+│   ├── test_phase7_6_case_management.py
+│   ├── test_phase7_7_escalation.py
+│   └── test_phase7_8_runner.py
 ├── tools/
 ├── main.py
 ├── requirements.txt
 └── README.md
+
 
 🗺️ Roadmap
 
@@ -1517,21 +1505,8 @@ SOC multiagente ponta a ponta
 
 Todas as fases são evoluções do mesmo projeto e do mesmo repositório.
 
-Roadmap principal: Fases 0–7 concluídas.
+Roadmap principal 0–7 concluído.
 
-Próximas evoluções possíveis:
-
-hardening;
-
-observabilidade;
-
-métricas operacionais;
-
-simulações E2E reais;
-
-CI/CD;
-
-preparação para demonstração controlada.
 
 🚀 Executando o Projeto
 
@@ -1547,7 +1522,7 @@ python -m venv .venv
 
 Ative:
 
-.\.venv\Scripts\Activate.ps1
+..venv\Scripts\Activate.ps1
 
 Instale as dependências:
 
@@ -1582,6 +1557,7 @@ Inteligência Artificial aplicada à segurança;
 simulações controladas.
 
 O projeto não representa autorização para executar ações críticas automaticamente em ambientes reais.
+
 
 👩‍💻 Autora
 
