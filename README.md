@@ -16,6 +16,7 @@
   <img src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white" alt="Python 3.14" />
   <img src="https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white" alt="Pydantic v2" />
   <img src="https://img.shields.io/badge/Ollama-Local_AI-black" alt="Ollama Local AI" />
+  <img src="https://img.shields.io/badge/MCP-2.2.0-5A67D8" alt="MCP 2.2.0" />
   <img src="https://img.shields.io/badge/Testes-321%20passed-brightgreen" alt="321 testes aprovados" />
   <img src="https://img.shields.io/badge/Fase-7%20conclu%C3%ADda-00C853" alt="Fase 7 concluída" />
   <img src="https://img.shields.io/badge/Pol%C3%ADtica-READ_ONLY-1565C0" alt="READ ONLY" />
@@ -345,7 +346,15 @@ A Fase 4 estabeleceu a infraestrutura de ferramentas defensivas utilizada pelos 
 
 Componentes principais:
 
-ToolDefinition • ToolRequest • ToolResult • ToolAuthorization • ToolRegistry • ToolRuntime • ToolPolicy
+ToolDefinition
+ToolRequest
+ToolResult
+ToolAuthorization
+ToolRegistry
+ToolRuntime
+ToolPolicy
+
+Fluxo:
 
 AGENTE
    ↓
@@ -389,26 +398,36 @@ Email / Phishing
 
 email.get_message_metadata, email.get_headers, email.get_authentication_results, email.get_attachment_metadata
 
-Ações críticas bloqueadas
+⛔ Ações críticas bloqueadas
 
 Exemplos:
 
 iam.reset_password
 iam.disable_user
 iam.delete_user
+
 network.block_ip
 network.unblock_ip
+
 firewall.add_rule
 firewall.delete_rule
 firewall.modify_rule
+
 endpoint.isolate_host
 endpoint.kill_process
 endpoint.delete_file
+
 email.open_url
 email.execute_attachment
 email.download_attachment
 
-Quando necessário, uma ação pode existir apenas como RECOMMENDED_ACTION ou SIMULATED_ACTION.
+Quando necessário, uma ação pode existir apenas como:
+
+RECOMMENDED_ACTION
+
+ou:
+
+SIMULATED_ACTION
 
 📚 Fase 5 — Knowledge / RAG Local
 
@@ -494,17 +513,29 @@ Guardrails incluem bloqueio de path traversal, links simbólicos, arquivos vazio
 
 🔌 Fase 6 — MCP
 
-A Fase 6 introduziu a camada MCP de forma local, defensiva e governada.
+A Fase 6 introduziu a camada MCP (Model Context Protocol) de forma local, defensiva e governada.
+
+O SDK oficial utiliza o namespace:
+
+mcp
+
+A implementação própria do projeto utiliza:
+
+soc_mcp
+
+Essa separação evita colisão de namespace entre o SDK e o código do laboratório.
 
 6.0 — Fundação MCP Read-Only
 
 Implementado:
 
-namespace oficial soc_mcp;
+SDK MCP 2.2.0;
+
+namespace próprio soc_mcp;
 
 contratos e configuração MCP;
 
-registry;
+registry MCP derivado do catálogo central;
 
 servidor local;
 
@@ -646,7 +677,10 @@ Toda conclusão deve possuir rastreabilidade.
 
 Fontes possíveis:
 
-Alertas • IOCs • MISP • Elastic • IAM • Asset/CMDB • Email • RAG • Investigation • Tools • Audit
+Alertas • IOCs • MISP • Elastic • IAM • Asset/CMDB
+• Email • RAG • Investigation • Tools • MCP • Audit
+
+Fluxo conceitual:
 
 Informação observada
         ↓
@@ -664,15 +698,26 @@ Informação observada
 
 A arquitetura utiliza eventos de auditoria append-only, incluindo:
 
-CASE_CREATED • CASE_UPDATED • AGENT_STARTED • AGENT_COMPLETED • TOOL_CALLED • EVIDENCE_ADDED • QA_REVIEWED • DECISION_CREATED • ERROR • HUMAN_ACTION
+CASE_CREATED
+CASE_UPDATED
+AGENT_STARTED
+AGENT_COMPLETED
+TOOL_CALLED
+EVIDENCE_ADDED
+QA_REVIEWED
+DECISION_CREATED
+ERROR
+HUMAN_ACTION
 
 Persistência:
 
-storage/incidents/;
+storage/incidents/
+storage/database/agentic_soc.db
 
-SQLite em storage/database/agentic_soc.db;
+Estruturas principais:
 
-estruturas principais: cases e audit_events.
+cases
+audit_events
 
 Arquivos operacionais não são versionados no Git.
 
@@ -736,6 +781,10 @@ HTTPX
 
 Clientes HTTP
 
+MCP SDK 2.2.0
+
+Integração governada de ferramentas
+
 SQLite
 
 Persistência
@@ -756,13 +805,11 @@ Mermaid
 
 Diagramas
 
-MCP
-
-Integração governada de ferramentas
-
 🧪 Testes Automatizados
 
-321 testes aprovados.
+O projeto possui atualmente:
+
+321 testes aprovados
 
 Módulo
 
@@ -847,6 +894,8 @@ TOTAL
 321
 
 ✅
+
+Executar:
 
 python -m pytest -q
 
@@ -938,7 +987,8 @@ SOC multiagente ponta a ponta
 ✅
 
 Roadmap principal 0–7 concluído.
-O projeto continua evoluindo no mesmo repositório.
+
+O projeto continua evoluindo no mesmo repositório, preservando arquitetura, governança e histórico.
 
 🚀 Executando o Projeto
 
@@ -978,7 +1028,7 @@ automação de segurança;
 
 arquitetura de agentes;
 
-IA aplicada à segurança;
+Inteligência Artificial aplicada à segurança;
 
 simulações controladas.
 
