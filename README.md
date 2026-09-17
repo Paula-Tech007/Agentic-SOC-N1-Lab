@@ -26,176 +26,91 @@
   <strong>A LLM interpreta. A ferramenta comprova.</strong>
 </p>
 
-✨ Visão Geral
+---
 
-O Agentic SOC N1 Lab é um laboratório de engenharia de segurança voltado à automação defensiva de atividades de SOC N1 por meio de uma arquitetura multiagente, IA local, ferramentas controladas e decisões orientadas por evidências.
+## ✨ Visão Geral
 
-O projeto foi desenhado para automatizar tarefas repetitivas sem entregar autoridade irrestrita à IA. Conclusões críticas devem ser sustentadas por dados verificáveis, regras determinísticas, auditoria e controles de governança.
+O **Agentic SOC N1 Lab** é um laboratório de engenharia de segurança voltado à automação defensiva de atividades de **SOC N1** por meio de uma arquitetura multiagente, IA local, ferramentas controladas e decisões orientadas por evidências.
 
-Destaques
+O projeto foi desenhado para automatizar tarefas repetitivas sem entregar autoridade irrestrita à IA.
 
-Capacidade
+Conclusões críticas devem ser sustentadas por dados verificáveis, regras determinísticas, auditoria e controles de governança.
 
-Implementação
+### Destaques
 
-🤖 Arquitetura multiagente
+| Capacidade | Implementação |
+| --- | --- |
+| 🤖 Arquitetura multiagente | 12 agentes especializados |
+| 🧠 IA local | Ollama |
+| 📚 Knowledge / RAG | Local e governado |
+| 🔌 MCP | STDIO / LOCAL_ONLY |
+| 🛡️ Política das ferramentas | READ_ONLY / FAIL_CLOSED |
+| 🧰 Ferramentas MCP | 18 ferramentas defensivas |
+| 🔁 Orquestração | Fluxo E2E controlado |
+| 🧪 Testes | 321 passed |
+| 🚫 Ações críticas autônomas | 0 |
+| 👤 Escalonamento humano | Disponível |
 
-12 agentes especializados
+---
 
-🧠 IA local
-
-Ollama
-
-📚 Knowledge / RAG
-
-Local e governado
-
-🔌 MCP
-
-STDIO / LOCAL_ONLY
-
-🛡️ Política das ferramentas
-
-READ_ONLY / FAIL_CLOSED
-
-🧰 Ferramentas MCP
-
-18 ferramentas defensivas
-
-🔁 Orquestração
-
-Fluxo E2E controlado
-
-🧪 Testes
-
-321 passed
-
-🚫 Ações críticas autônomas
-
-0
-
-👤 Escalonamento humano
-
-Disponível
-
-🎯 Objetivo
+## 🎯 Objetivo
 
 O laboratório foi projetado para automatizar o ciclo operacional de um SOC N1 de forma controlada:
 
-receber e normalizar alertas;
+- receber e normalizar alertas;
+- realizar triagem e classificação;
+- enriquecer indicadores e contexto;
+- consultar Threat Intelligence;
+- analisar identidades e privilégios;
+- consultar ativos e criticidade;
+- investigar phishing;
+- recuperar conhecimento por RAG;
+- utilizar ferramentas defensivas por MCP;
+- correlacionar evidências;
+- construir investigações;
+- executar Reflection / QA;
+- documentar casos;
+- decidir fechamento ou escalonamento;
+- manter auditoria e rastreabilidade.
 
-realizar triagem e classificação;
+---
 
-enriquecer indicadores e contexto;
+# 🧠 Arquitetura Multiagente
 
-consultar Threat Intelligence;
+O projeto possui **12 agentes oficiais**.
 
-analisar identidades e privilégios;
+<p align="center">
+  <img
+    src="assets/Arquitetura.png"
+    alt="Arquitetura Multiagente do Agentic SOC N1 Lab"
+    width="95%"
+  />
+</p>
 
-consultar ativos e criticidade;
+<p align="center">
+  <sub><strong>Arquitetura dos agentes especializados e seus papéis no SOC N1.</strong></sub>
+</p>
 
-investigar phishing;
+| ID | Agente | Responsabilidade |
+| --- | --- | --- |
+| **AG-01** | SOC Supervisor Agent | Coordena, roteia e controla a execução |
+| **AG-02** | Alert Intake Agent | Recebe, valida e normaliza alertas |
+| **AG-03** | Triage Analyst Agent | Classifica severidade, contexto e prioridade |
+| **AG-04** | Threat Intelligence Agent | Consulta e consolida inteligência de ameaças |
+| **AG-05** | Identity Analyst Agent | Analisa conta, MFA, grupos e privilégios |
+| **AG-06** | Asset Context Agent | Recupera ativo, IP, criticidade e EDR |
+| **AG-07** | Phishing Analyst Agent | Analisa metadados e autenticação de e-mail |
+| **AG-08** | Knowledge / RAG Agent | Recupera conhecimento, políticas e playbooks |
+| **AG-09** | Incident Analyst Agent | Consolida evidências e investigação |
+| **AG-10** | Reflection / QA Agent | Revisa qualidade, lacunas e inconsistências |
+| **AG-11** | Case Management Agent | Mantém documentação e histórico |
+| **AG-12** | Escalation Agent | Fecha N1, escala N2 ou aguarda humano |
 
-recuperar conhecimento por RAG;
+---
 
-utilizar ferramentas defensivas por MCP;
+## 🔁 Fluxo Principal
 
-correlacionar evidências;
-
-construir investigações;
-
-executar Reflection / QA;
-
-documentar casos;
-
-decidir fechamento ou escalonamento;
-
-manter auditoria e rastreabilidade.
-
-🧠 Arquitetura Multiagente
-
-O projeto possui 12 agentes oficiais.
-
-ID
-
-Agente
-
-Responsabilidade
-
-AG-01
-
-SOC Supervisor Agent
-
-Coordena, roteia e controla a execução
-
-AG-02
-
-Alert Intake Agent
-
-Recebe, valida e normaliza alertas
-
-AG-03
-
-Triage Analyst Agent
-
-Classifica severidade, contexto e prioridade
-
-AG-04
-
-Threat Intelligence Agent
-
-Consulta e consolida inteligência de ameaças
-
-AG-05
-
-Identity Analyst Agent
-
-Analisa conta, MFA, grupos e privilégios
-
-AG-06
-
-Asset Context Agent
-
-Recupera ativo, IP, criticidade e EDR
-
-AG-07
-
-Phishing Analyst Agent
-
-Analisa metadados e autenticação de e-mail
-
-AG-08
-
-Knowledge / RAG Agent
-
-Recupera conhecimento, políticas e playbooks
-
-AG-09
-
-Incident Analyst Agent
-
-Consolida evidências e investigação
-
-AG-10
-
-Reflection / QA Agent
-
-Revisa qualidade, lacunas e inconsistências
-
-AG-11
-
-Case Management Agent
-
-Mantém documentação e histórico
-
-AG-12
-
-Escalation Agent
-
-Fecha N1, escala N2 ou aguarda humano
-
-Fluxo principal
-
+```mermaid
 flowchart TD
     A[Alerta / Evento] --> B[AG-02 Alert Intake]
     B --> C[AG-03 Triage]
@@ -218,12 +133,17 @@ flowchart TD
     QA -->|Aprovado| CM[AG-11 Case Management]
 
     CM --> ESC[AG-12 Escalation]
+
     ESC --> N1[CLOSED_N1]
     ESC --> N2[ESCALATED_N2]
     ESC --> HUM[WAITING_HUMAN]
+```
 
-🔄 Ciclo de Vida do Caso
+---
 
+## 🔄 Ciclo de Vida do Caso
+
+```text
 RECEIVED
    ↓
 NORMALIZING
@@ -243,109 +163,118 @@ DOCUMENTING
 DECIDING
    ↓
 CLOSED_N1 / ESCALATED_N2 / WAITING_HUMAN
+```
 
-Estados auxiliares:
+### Estados auxiliares
 
-WAITING_DATA • WAITING_HUMAN • RETRYING • FAILED • CANCELLED
+```text
+WAITING_DATA
+WAITING_HUMAN
+RETRYING
+FAILED
+CANCELLED
+```
 
-Estados dos agentes:
+### Estados dos agentes
 
-PENDING • RUNNING • COMPLETED • FAILED • SKIPPED
+```text
+PENDING
+RUNNING
+COMPLETED
+FAILED
+SKIPPED
+```
 
-🧩 CaseState
+---
 
-O CaseState funciona como a ficha viva da investigação e concentra o contexto operacional do caso:
+# 🧩 CaseState
 
-Alert + IOCs + Identidades + Ativos + Evidências
-+ Triage + Threat Intelligence + Phishing
-+ Knowledge/RAG + Investigation + QA
-+ Escalation + Audit + Workflow
-= CaseState
+O `CaseState` funciona como a ficha viva da investigação e concentra o contexto operacional do caso.
 
-Inclui suporte a:
+```text
+Alert
+  +
+IOCs
+  +
+Identidades
+  +
+Ativos
+  +
+Evidências
+  +
+Triage
+  +
+Threat Intelligence
+  +
+Phishing
+  +
+Knowledge / RAG
+  +
+Investigation
+  +
+QA
+  +
+Escalation
+  +
+Audit
+  +
+Workflow
+  ↓
+CaseState
+```
 
-case_id e correlation_id;
+O `CaseState` inclui suporte a:
 
-alerta original e IOCs;
+- `case_id`;
+- `correlation_id`;
+- alerta original;
+- IOCs;
+- identidades;
+- ativos;
+- evidências;
+- triagem;
+- enriquecimento;
+- investigação;
+- QA;
+- escalonamento;
+- auditoria;
+- workflow;
+- versionamento;
+- timestamps;
+- serialização;
+- persistência.
 
-identidades e ativos;
+---
 
-evidências;
-
-triagem e enriquecimento;
-
-investigação;
-
-QA;
-
-escalonamento;
-
-auditoria;
-
-workflow e versionamento;
-
-timestamps, serialização e persistência.
-
-🔐 Segurança e Governança
+# 🔐 Segurança e Governança
 
 A arquitetura aplica controles defensivos desde a fundação.
 
-Princípio
+| Princípio | Aplicação |
+| --- | --- |
+| **Deny by default** | Tudo começa bloqueado até autorização explícita |
+| **Least privilege** | Cada agente recebe somente o necessário |
+| **Fail closed** | Falha de validação resulta em bloqueio |
+| **Evidence first** | Evidência precede conclusões críticas |
+| **ToolRuntime soberano** | A ferramenta controla execução, não a LLM |
+| **READ_ONLY** | Integrações operam sem escrita crítica |
+| **Auditoria append-only** | Eventos anteriores não são sobrescritos |
+| **Retries / loops limitados** | Evita repetição indefinida |
+| **Escalonamento humano** | Humano ou N2 permanece disponível |
+| **Sem shell irrestrito** | Execução arbitrária não é permitida |
+| **Sem contenção crítica autônoma** | Ações críticas não são executadas automaticamente |
 
-Aplicação
+---
 
-Deny by default
-
-Tudo começa bloqueado até autorização explícita
-
-Least privilege
-
-Cada agente recebe somente o necessário
-
-Fail closed
-
-Falha de validação resulta em bloqueio
-
-Evidence first
-
-Evidência precede conclusões críticas
-
-ToolRuntime soberano
-
-A ferramenta controla execução, não a LLM
-
-READ_ONLY
-
-Integrações operam sem escrita crítica
-
-Auditoria append-only
-
-Eventos anteriores não são sobrescritos
-
-Retries / loops limitados
-
-Evita repetição indefinida
-
-Escalonamento humano
-
-Humano/N2 permanece disponível
-
-Sem shell irrestrito
-
-Execução arbitrária não é permitida
-
-Sem contenção crítica autônoma
-
-Ações críticas não são executadas automaticamente
-
-🧰 Fase 4 — Tools e Integrações
+# 🧰 Fase 4 — Tools e Integrações
 
 A Fase 4 estabeleceu a infraestrutura de ferramentas defensivas utilizada pelos agentes.
 
-4.0 — Fundação de Tools
+## 4.0 — Fundação de Tools
 
 Componentes principais:
 
+```text
 ToolDefinition
 ToolRequest
 ToolResult
@@ -353,9 +282,11 @@ ToolAuthorization
 ToolRegistry
 ToolRuntime
 ToolPolicy
+```
 
-Fluxo:
+### Fluxo
 
+```text
 AGENTE
    ↓
 ToolRequest
@@ -371,37 +302,27 @@ Integração
 ToolResult
    ↓
 Evidência
+```
 
-Integrações defensivas
+---
 
-Integração
+## 🔗 Integrações Defensivas
 
-Ferramentas
+| Integração | Ferramentas |
+| --- | --- |
+| **MISP** | `misp.search_ioc`, `misp.get_event`, `misp.get_attribute` |
+| **Elastic** | `elastic.search_alerts`, `elastic.search_events`, `elastic.get_document` |
+| **Identity / IAM** | `iam.get_user`, `iam.get_account_status`, `iam.get_mfa_status`, `iam.get_group_membership` |
+| **Asset / CMDB** | `asset.get_asset`, `asset.get_ip_context`, `asset.get_criticality`, `asset.get_edr_status` |
+| **Email / Phishing** | `email.get_message_metadata`, `email.get_headers`, `email.get_authentication_results`, `email.get_attachment_metadata` |
 
-MISP
+---
 
-misp.search_ioc, misp.get_event, misp.get_attribute
+## ⛔ Ações Críticas Bloqueadas
 
-Elastic
+Exemplos de ações que não podem ser executadas automaticamente:
 
-elastic.search_alerts, elastic.search_events, elastic.get_document
-
-Identity / IAM
-
-iam.get_user, iam.get_account_status, iam.get_mfa_status, iam.get_group_membership
-
-Asset / CMDB
-
-asset.get_asset, asset.get_ip_context, asset.get_criticality, asset.get_edr_status
-
-Email / Phishing
-
-email.get_message_metadata, email.get_headers, email.get_authentication_results, email.get_attachment_metadata
-
-⛔ Ações críticas bloqueadas
-
-Exemplos:
-
+```text
 iam.reset_password
 iam.disable_user
 iam.delete_user
@@ -420,21 +341,29 @@ endpoint.delete_file
 email.open_url
 email.execute_attachment
 email.download_attachment
+```
 
-Quando necessário, uma ação pode existir apenas como:
+Quando necessário, uma ação crítica pode existir apenas como:
 
+```text
 RECOMMENDED_ACTION
+```
 
 ou:
 
+```text
 SIMULATED_ACTION
+```
 
-📚 Fase 5 — Knowledge / RAG Local
+---
+
+# 📚 Fase 5 — Knowledge / RAG Local
 
 A Fase 5 implementou a recuperação local de conhecimento autorizado.
 
-Pipeline
+## Pipeline
 
+```text
 knowledge/
    ↓
 Ingestão segura
@@ -454,107 +383,88 @@ RAGSearchResult
 RAGKnowledgeAdapter
    ↓
 AG-08 Knowledge / RAG
+```
 
-Etapa
+### Etapas da Fase 5
 
-Função
+| Etapa | Função | Status |
+| --- | --- | :---: |
+| **5.0** | Configuração e contratos | ✅ |
+| **5.1** | Ingestão segura | ✅ |
+| **5.2** | Chunking | ✅ |
+| **5.3** | Embeddings locais | ✅ |
+| **5.4** | Índice vetorial JSON | ✅ |
+| **5.5** | Retrieval / Similaridade | ✅ |
+| **5.6** | Integração RAG → AG-08 | ✅ |
+| **5.7** | Testes formais | ✅ |
 
-Status
+### Guardrails do RAG
 
-5.0
+O pipeline inclui bloqueio de:
 
-Configuração e contratos
+- path traversal;
+- links simbólicos;
+- arquivos vazios;
+- arquivos excessivamente grandes;
+- conteúdo fora de UTF-8;
+- execução de arquivos.
 
-✅
+---
 
-5.1
+# 🔌 Fase 6 — MCP
 
-Ingestão segura
+A Fase 6 introduziu a camada **MCP — Model Context Protocol** de forma local, defensiva e governada.
 
-✅
+<p align="center">
+  <img
+    src="assets/MCP.png"
+    alt="Arquitetura MCP do Agentic SOC N1 Lab"
+    width="95%"
+  />
+</p>
 
-5.2
-
-Chunking
-
-✅
-
-5.3
-
-Embeddings locais
-
-✅
-
-5.4
-
-Índice vetorial JSON
-
-✅
-
-5.5
-
-Retrieval / Similaridade
-
-✅
-
-5.6
-
-Integração RAG → AG-08
-
-✅
-
-5.7
-
-Testes formais
-
-✅
-
-Guardrails incluem bloqueio de path traversal, links simbólicos, arquivos vazios ou excessivamente grandes, conteúdo fora de UTF-8 e qualquer execução de arquivo.
-
-🔌 Fase 6 — MCP
-
-A Fase 6 introduziu a camada MCP (Model Context Protocol) de forma local, defensiva e governada.
+<p align="center">
+  <sub><strong>MCP local e governado, integrado ao ToolRuntime e às políticas de segurança.</strong></sub>
+</p>
 
 O SDK oficial utiliza o namespace:
 
+```text
 mcp
+```
 
 A implementação própria do projeto utiliza:
 
+```text
 soc_mcp
+```
 
-Essa separação evita colisão de namespace entre o SDK e o código do laboratório.
+Essa separação evita colisão de namespace entre o SDK oficial e o código do laboratório.
 
-6.0 — Fundação MCP Read-Only
+---
+
+## 6.0 — Fundação MCP Read-Only
 
 Implementado:
 
-SDK MCP 2.2.0;
+- SDK MCP **2.2.0**;
+- namespace próprio `soc_mcp`;
+- contratos MCP;
+- configuração MCP;
+- registry MCP derivado do catálogo central;
+- servidor local;
+- bridge `MCP → ToolRuntime`;
+- transporte `STDIO`;
+- execução `LOCAL_ONLY`;
+- política `READ_ONLY`;
+- comportamento `FAIL_CLOSED`;
+- bloqueio de transporte de rede;
+- bloqueio de ações críticas;
+- 18 ferramentas defensivas governadas.
 
-namespace próprio soc_mcp;
+### Fluxo MCP
 
-contratos e configuração MCP;
-
-registry MCP derivado do catálogo central;
-
-servidor local;
-
-bridge MCP → ToolRuntime;
-
-transporte STDIO;
-
-execução LOCAL_ONLY;
-
-política READ_ONLY;
-
-comportamento FAIL_CLOSED;
-
-bloqueio de transporte de rede;
-
-bloqueio de ações críticas;
-
-18 ferramentas defensivas governadas.
-
+```text
 AGENTE
    ↓
 MCP Client
@@ -570,85 +480,60 @@ ToolPolicy / Permissions
 ToolResult
    ↓
 Evidence
+```
 
-6.1 — MCP Client Local Controlado
+---
+
+## 6.1 — MCP Client Local Controlado
 
 O cliente MCP:
 
-conecta somente ao servidor local;
+- conecta somente ao servidor local;
+- lista somente ferramentas publicadas e autorizadas;
+- rejeita ferramentas não publicadas;
+- executa apenas operações defensivas/read-only;
+- não controla livremente `agent_id`;
+- não controla livremente `case_id`;
+- não controla livremente `correlation_id`;
+- respeita o contexto definido pelo servidor;
+- encerra a sessão de forma controlada.
 
-lista somente ferramentas publicadas e autorizadas;
+---
 
-rejeita ferramentas não publicadas;
+# 🔁 Fase 7 — SOC Multiagente Ponta a Ponta
 
-executa apenas operações defensivas/read-only;
+A Fase 7 integrou os componentes em um workflow **E2E auditável e governado**.
 
-não controla livremente agent_id, case_id ou correlation_id;
+<p align="center">
+  <img
+    src="assets/Orquestracao.png"
+    alt="Orquestração E2E do Agentic SOC N1 Lab"
+    width="95%"
+  />
+</p>
 
-respeita o contexto definido pelo servidor;
+<p align="center">
+  <sub><strong>Orquestração ponta a ponta do alerta até a decisão final do SOC N1.</strong></sub>
+</p>
 
-encerra a sessão de forma controlada.
+### Entregas da Fase 7
 
-🔁 Fase 7 — SOC Multiagente Ponta a Ponta
+| Etapa | Entrega | Status |
+| --- | --- | :---: |
+| **7.1** | Fundação E2E controlada | ✅ |
+| **7.2** | Supervisor automático | ✅ |
+| **7.3** | Enriquecimento AG-04 → AG-08 | ✅ |
+| **7.4** | Incident Analyst | ✅ |
+| **7.5** | Reflection / QA + retry controlado | ✅ |
+| **7.6** | Case Management | ✅ |
+| **7.7** | Escalation / finalização | ✅ |
+| **7.8** | `Phase7E2ERunner` | ✅ |
 
-A Fase 7 integrou os componentes em um workflow E2E auditável e governado.
+---
 
-Etapa
+## Fluxo E2E
 
-Entrega
-
-Status
-
-7.1
-
-Fundação E2E controlada
-
-✅
-
-7.2
-
-Supervisor automático
-
-✅
-
-7.3
-
-Enriquecimento AG-04 → AG-08
-
-✅
-
-7.4
-
-Incident Analyst
-
-✅
-
-7.5
-
-Reflection / QA + retry controlado
-
-✅
-
-7.6
-
-Case Management
-
-✅
-
-7.7
-
-Escalation / finalização
-
-✅
-
-7.8
-
-Phase7E2ERunner
-
-✅
-
-Fluxo E2E
-
+```text
 Alerta
    ↓
 AG-02 Alert Intake
@@ -670,18 +555,34 @@ AG-11 Case Management
 AG-12 Escalation
    ↓
 CLOSED_N1 / ESCALATED_N2 / WAITING_HUMAN
+```
 
-🔍 Modelo de Evidências
+---
+
+# 🔍 Modelo de Evidências
 
 Toda conclusão deve possuir rastreabilidade.
 
-Fontes possíveis:
+### Fontes possíveis
 
-Alertas • IOCs • MISP • Elastic • IAM • Asset/CMDB
-• Email • RAG • Investigation • Tools • MCP • Audit
+```text
+Alertas
+IOCs
+MISP
+Elastic
+IAM
+Asset / CMDB
+Email
+RAG
+Investigation
+Tools
+MCP
+Audit
+```
 
-Fluxo conceitual:
+### Fluxo conceitual
 
+```text
 Informação observada
         ↓
      Evidência
@@ -693,11 +594,17 @@ Informação observada
  Reflection / QA
         ↓
       Decisão
+```
 
-🧾 Auditoria e Persistência
+---
 
-A arquitetura utiliza eventos de auditoria append-only, incluindo:
+# 🧾 Auditoria e Persistência
 
+A arquitetura utiliza eventos de auditoria **append-only**.
+
+### Eventos principais
+
+```text
 CASE_CREATED
 CASE_UPDATED
 AGENT_STARTED
@@ -708,207 +615,116 @@ QA_REVIEWED
 DECISION_CREATED
 ERROR
 HUMAN_ACTION
+```
 
-Persistência:
+### Persistência
 
+```text
 storage/incidents/
 storage/database/agentic_soc.db
+```
 
-Estruturas principais:
+### Estruturas principais
 
+```text
 cases
 audit_events
+```
 
 Arquivos operacionais não são versionados no Git.
 
-🤖 Inteligência Artificial Local
+---
 
-Função
+# 🤖 Inteligência Artificial Local
 
-Modelo
+| Função | Modelo |
+| --- | --- |
+| LLM / agentes | `qwen3:4b-instruct` |
+| Embeddings / RAG | `embeddinggemma` |
 
-LLM / agentes
+### Benefícios
 
-qwen3:4b-instruct
+- execução local;
+- maior controle sobre dados;
+- experimentação com modelos abertos;
+- menor dependência de APIs externas;
+- separação entre interpretação e comprovação.
 
-Embeddings / RAG
+---
 
-embeddinggemma
+# ⚙️ Tecnologias
 
-Benefícios:
+| Tecnologia | Uso |
+| --- | --- |
+| Python 3.14 | Desenvolvimento principal |
+| Pydantic v2 | Schemas e validação |
+| Ollama | IA local |
+| Qwen3 | LLM |
+| EmbeddingGemma | Embeddings |
+| NumPy | Operações numéricas |
+| HTTPX | Clientes HTTP |
+| MCP SDK 2.2.0 | Integração governada de ferramentas |
+| SQLite | Persistência |
+| Pytest | Testes automatizados |
+| Git | Versionamento |
+| GitHub | Repositório |
+| Mermaid | Diagramas |
 
-execução local;
+---
 
-maior controle sobre dados;
-
-experimentação com modelos abertos;
-
-menor dependência de APIs externas;
-
-separação entre interpretação e comprovação.
-
-⚙️ Tecnologias
-
-Tecnologia
-
-Uso
-
-Python 3.14
-
-Desenvolvimento principal
-
-Pydantic v2
-
-Schemas e validação
-
-Ollama
-
-IA local
-
-Qwen3
-
-LLM
-
-EmbeddingGemma
-
-Embeddings
-
-NumPy
-
-Operações numéricas
-
-HTTPX
-
-Clientes HTTP
-
-MCP SDK 2.2.0
-
-Integração governada de ferramentas
-
-SQLite
-
-Persistência
-
-Pytest
-
-Testes automatizados
-
-Git
-
-Versionamento
-
-GitHub
-
-Repositório
-
-Mermaid
-
-Diagramas
-
-🧪 Testes Automatizados
+# 🧪 Testes Automatizados
 
 O projeto possui atualmente:
 
+```text
 321 testes aprovados
+```
 
-Módulo
+### Distribuição dos testes
 
-Testes
+| Módulo | Testes | Status |
+| --- | ---: | :---: |
+| Fundação | 8 | ✅ |
+| Fase 2 | 20 | ✅ |
+| Fase 3 | 19 | ✅ |
+| Fase 4.0 — Tools | 20 | ✅ |
+| Fase 4.1 — MISP | 17 | ✅ |
+| Fase 4.2 — Elastic | 19 | ✅ |
+| Fase 4.3 — Identity / IAM | 24 | ✅ |
+| Fase 4.4 — Asset / CMDB | 24 | ✅ |
+| Fase 4.5 — Email / Phishing | 24 | ✅ |
+| Fase 5 — Knowledge / RAG | 30 | ✅ |
+| Fase 6 — MCP | 45 | ✅ |
+| Fase 7 — E2E | 71 | ✅ |
+| **TOTAL** | **321** | ✅ |
 
-Status
+### Executar
 
-Fundação
-
-8
-
-✅
-
-Fase 2
-
-20
-
-✅
-
-Fase 3
-
-19
-
-✅
-
-Fase 4.0 — Tools
-
-20
-
-✅
-
-Fase 4.1 — MISP
-
-17
-
-✅
-
-Fase 4.2 — Elastic
-
-19
-
-✅
-
-Fase 4.3 — Identity / IAM
-
-24
-
-✅
-
-Fase 4.4 — Asset / CMDB
-
-24
-
-✅
-
-Fase 4.5 — Email / Phishing
-
-24
-
-✅
-
-Fase 5 — Knowledge / RAG
-
-30
-
-✅
-
-Fase 6 — MCP
-
-45
-
-✅
-
-Fase 7 — E2E
-
-71
-
-✅
-
-TOTAL
-
-321
-
-✅
-
-Executar:
-
+```powershell
 python -m pytest -q
+```
 
 Resultado esperado:
 
+```text
 321 passed
+```
 
-📂 Estrutura Principal
+---
 
+# 📂 Estrutura Principal
+
+```text
 Agentic-SOC-N1-Lab/
+│
 ├── agents/
+│
 ├── assets/
+│   ├── Arquitetura.png
+│   ├── MCP.png
+│   ├── Orquestracao.png
 │   └── banner-agentic-soc-n1-lab.png
+│
 ├── core/
 │   ├── config/
 │   ├── llm/
@@ -916,129 +732,116 @@ Agentic-SOC-N1-Lab/
 │   ├── permissions/
 │   ├── schemas/
 │   └── state/
+│
 ├── docs/
+│
 ├── knowledge/
+│
 ├── rag/
+│
 ├── soc_mcp/
 │   ├── client/
 │   └── server/
+│
 ├── simulations/
+│
 ├── storage/
+│
 ├── tests/
+│
 ├── tools/
+│
 ├── main.py
 ├── requirements.txt
 └── README.md
+```
 
-🗺️ Roadmap
+---
 
-Fase
+# 🗺️ Roadmap
 
-Escopo
+| Fase | Escopo | Status |
+| :---: | --- | :---: |
+| **0** | Escopo, arquitetura e governança | ✅ Concluída |
+| **1** | Fundação técnica | ✅ Concluída |
+| **2** | Schemas, estado, persistência e auditoria | ✅ Concluída |
+| **3** | Agentes, runtime e orquestração | ✅ Concluída |
+| **4** | Tools e integrações defensivas | ✅ Concluída |
+| **5** | Knowledge / RAG local | ✅ Concluída |
+| **6** | MCP local, read-only e governado | ✅ Concluída |
+| **7** | SOC multiagente ponta a ponta | ✅ Concluída |
 
-Status
+**Roadmap principal 0–7 concluído.**
 
-0
+O projeto continua evoluindo no **mesmo repositório**, preservando arquitetura, governança e histórico.
 
-Escopo, arquitetura e governança
+---
 
-✅
+# 🚀 Executando o Projeto
 
-1
+## 1. Clonar o repositório
 
-Fundação técnica
-
-✅
-
-2
-
-Schemas, estado, persistência e auditoria
-
-✅
-
-3
-
-Agentes, runtime e orquestração
-
-✅
-
-4
-
-Tools e integrações defensivas
-
-✅
-
-5
-
-Knowledge / RAG local
-
-✅
-
-6
-
-MCP local, read-only e governado
-
-✅
-
-7
-
-SOC multiagente ponta a ponta
-
-✅
-
-Roadmap principal 0–7 concluído.
-
-O projeto continua evoluindo no mesmo repositório, preservando arquitetura, governança e histórico.
-
-🚀 Executando o Projeto
-
-Clone:
-
+```powershell
 git clone https://github.com/Paula-Tech007/Agentic-SOC-N1-Lab.git
 cd Agentic-SOC-N1-Lab
+```
 
-Crie e ative o ambiente virtual:
+## 2. Criar o ambiente virtual
 
+```powershell
 python -m venv .venv
+```
+
+## 3. Ativar o ambiente virtual
+
+```powershell
 .\.venv\Scripts\Activate.ps1
+```
 
-Instale as dependências:
+## 4. Instalar as dependências
 
+```powershell
 python -m pip install -r requirements.txt
+```
 
-Execute os testes:
+## 5. Executar os testes
 
+```powershell
 python -m pytest -q
+```
 
-Resultado atual:
+### Resultado atual
 
+```text
 321 passed
+```
 
-⚠️ Uso Defensivo
+---
+
+# ⚠️ Uso Defensivo
 
 Este repositório é um laboratório educacional e defensivo de Segurança Cibernética.
 
 Foi desenvolvido para:
 
-pesquisa defensiva;
-
-laboratórios SOC;
-
-automação de segurança;
-
-arquitetura de agentes;
-
-Inteligência Artificial aplicada à segurança;
-
-simulações controladas.
+- pesquisa defensiva;
+- laboratórios SOC;
+- automação de segurança;
+- arquitetura de agentes;
+- Inteligência Artificial aplicada à segurança;
+- simulações controladas.
 
 O projeto não representa autorização para executar ações críticas automaticamente em ambientes reais.
 
-👩‍💻 Autora
+---
 
-Paula Sabino
+# 👩‍💻 Autora
+
+**Paula Sabino**
 
 Segurança Cibernética • SOC • Automação de Segurança • IA aplicada à Segurança
+
+---
 
 <p align="center">
   <strong>🛡️ Agentic SOC N1 Lab</strong>
