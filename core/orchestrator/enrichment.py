@@ -29,6 +29,10 @@ Fluxo:
         ↓
     próximo agente de enriquecimento
         ↓
+    EnrichmentPayloadProvider
+        ↓
+    input_payload comprovado
+        ↓
     execução controlada
         ↓
     CaseState atualizado
@@ -44,6 +48,7 @@ A camada permanece:
 - sem bypass do Runtime;
 - sem bypass de permissões;
 - sem acesso direto a ferramentas;
+- sem dependência da camada app;
 - sem execução de AG-09..AG-12 nesta etapa.
 
 Princípio:
@@ -54,8 +59,9 @@ Princípio:
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Protocol
 
 from core.orchestrator.contracts import (
     AgentExecutionResult,
@@ -82,6 +88,43 @@ ENRICHMENT_AGENT_IDS: tuple[str, ...] = (
     "AG-07",
     "AG-08",
 )
+
+
+class EnrichmentPayloadProviderProtocol(
+    Protocol
+):
+    """
+    Contrato mínimo esperado pela camada
+    de enriquecimento.
+
+    O core não conhece a implementação
+    concreta do provider.
+
+    Isso preserva a direção arquitetural:
+
+        app
+         ↓
+        core
+
+    e nunca:
+
+        core
+         ↓
+        app
+    """
+
+    def build_payload(
+        self,
+        *,
+        case_state: CaseState,
+        agent_id: str,
+    ) -> Mapping[str, Any]:
+        """
+        Produz input_payload para exatamente
+        um agente de enriquecimento.
+        """
+
+        ...
 
 
 @dataclass(
@@ -178,6 +221,11 @@ class EnrichmentE2EController:
     O Supervisor continua responsável
     pelo roteamento entre os agentes.
 
+    Quando um payload_provider é fornecido,
+    o controller solicita a ele o payload
+    correspondente ao especialista escolhido
+    pelo Supervisor antes da execução.
+
     Esta classe nunca executa:
 
     - AG-02;
@@ -195,10 +243,24 @@ class EnrichmentE2EController:
         self,
         orchestrator: SOCOrchestrator
         | None = None,
+        *,
+        payload_provider: (
+            EnrichmentPayloadProviderProtocol
+            | None
+        ) = None,
     ) -> None:
         """
         Inicializa a camada de
         enriquecimento.
+
+        payload_provider é opcional para
+        preservar compatibilidade com
+        testes e consumidores anteriores.
+
+        Quando presente, todo especialista
+        de enriquecimento recebe payload
+        produzido explicitamente pelo
+        provider.
         """
 
         if (
@@ -213,10 +275,29 @@ class EnrichmentE2EController:
                 "SOCOrchestrator."
             )
 
+        if (
+            payload_provider is not None
+            and not callable(
+                getattr(
+                    payload_provider,
+                    "build_payload",
+                    None,
+                )
+            )
+        ):
+            raise TypeError(
+                "payload_provider precisa "
+                "implementar build_payload()."
+            )
+
         self._orchestrator = (
             orchestrator
             if orchestrator is not None
             else SOCOrchestrator()
+        )
+
+        self._payload_provider = (
+            payload_provider
         )
 
         self._e2e = E2EExecutionController(
@@ -238,6 +319,23 @@ class EnrichmentE2EController:
         """
 
         return self._orchestrator
+
+    @property
+    def payload_provider(
+        self,
+    ) -> (
+        EnrichmentPayloadProviderProtocol
+        | None
+    ):
+        """
+        Retorna o provider configurado.
+
+        None indica modo legado,
+        preservado somente para
+        compatibilidade.
+        """
+
+        return self._payload_provider
 
     def pending_enrichment_agents(
         self,
@@ -264,6 +362,69 @@ class EnrichmentE2EController:
             in ENRICHMENT_AGENT_IDS
         )
 
+    def _build_specialist_payload(
+        self,
+        *,
+        case_state: CaseState,
+        agent_id: str,
+    ) -> dict[str, Any] | None:
+        """
+        Prepara input_payload para o
+        especialista selecionado.
+
+        Quando nenhum provider foi
+        configurado, retorna None para
+        preservar o comportamento anterior.
+
+        Quando existe provider:
+
+        - o agente precisa pertencer
+          ao enriquecimento;
+        - build_payload precisa retornar
+          Mapping;
+        - o payload é copiado antes de
+          ser enviado ao fluxo supervisionado.
+
+        Qualquer inconsistência falha fechado.
+        """
+
+        if (
+            agent_id
+            not in ENRICHMENT_AGENT_IDS
+        ):
+            raise RuntimeError(
+                "Payload solicitado para "
+                "agente fora da etapa de "
+                "enriquecimento: "
+                f"{agent_id}."
+            )
+
+        provider = (
+            self._payload_provider
+        )
+
+        if provider is None:
+            return None
+
+        payload = provider.build_payload(
+            case_state=case_state,
+            agent_id=agent_id,
+        )
+
+        if not isinstance(
+            payload,
+            Mapping,
+        ):
+            raise RuntimeError(
+                "payload_provider retornou "
+                "payload inválido para "
+                f"{agent_id}: Mapping esperado."
+            )
+
+        return dict(
+            payload
+        )
+
     def run(
         self,
         case_state: CaseState,
@@ -275,6 +436,13 @@ class EnrichmentE2EController:
 
         Cada passo passa primeiro
         pelo AG-01 Supervisor.
+
+        Depois da seleção do Supervisor:
+
+        1. o agente escolhido é confirmado;
+        2. o provider prepara o payload;
+        3. o especialista é executado
+           pelo fluxo supervisionado.
 
         A execução para imediatamente
         quando:
@@ -323,9 +491,11 @@ class EnrichmentE2EController:
             )
 
         executed_agents: list[str] = []
+
         supervisor_results: list[
             AgentExecutionResult
         ] = []
+
         specialist_results: list[
             AgentExecutionResult
         ] = []
@@ -354,10 +524,20 @@ class EnrichmentE2EController:
                 stopped_before_non_enrichment = True
                 break
 
+            input_payload = (
+                self._build_specialist_payload(
+                    case_state=case_state,
+                    agent_id=next_agent,
+                )
+            )
+
             step: SupervisedStepResult = (
                 self._supervised
                 .execute_supervised_step(
-                    case_state
+                    case_state,
+                    input_payload=(
+                        input_payload
+                    ),
                 )
             )
 
@@ -391,6 +571,19 @@ class EnrichmentE2EController:
                     "Agente executado fora da "
                     "etapa de enriquecimento: "
                     f"{executed_agent}."
+                )
+
+            if (
+                executed_agent
+                != next_agent
+            ):
+                raise RuntimeError(
+                    "Especialista executado "
+                    "não corresponde ao agente "
+                    "pendente preparado pelo "
+                    "payload_provider: "
+                    f"esperado={next_agent}, "
+                    f"executado={executed_agent}."
                 )
 
             if executed_agent in executed_agents:
@@ -444,5 +637,6 @@ class EnrichmentE2EController:
 __all__ = [
     "ENRICHMENT_AGENT_IDS",
     "EnrichmentE2EController",
+    "EnrichmentPayloadProviderProtocol",
     "EnrichmentRunResult",
 ]

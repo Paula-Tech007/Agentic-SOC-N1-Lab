@@ -14,6 +14,8 @@ Escopo:
 - fail-closed sem enriquecimento;
 - execução sequencial controlada;
 - parada antes de AG-09;
+- integração com EnrichmentPayloadProvider;
+- propagação controlada de input_payload;
 - imutabilidade do resultado;
 - summary seguro.
 
@@ -26,11 +28,13 @@ a lógica de orquestração da Fase 7.3.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import (
     FrozenInstanceError,
     dataclass,
 )
 from types import SimpleNamespace
+from typing import Any
 
 import pytest
 
@@ -73,6 +77,83 @@ class FakeExecutionResult:
     success: bool = True
 
 
+class FakePayloadProvider:
+    """
+    Provider controlado utilizado
+    exclusivamente nos testes da 3C.
+
+    Não acessa ferramentas,
+    rede, RAG ou serviços externos.
+
+    Apenas comprova que o controller:
+
+    1. solicita payload para o agente correto;
+    2. recebe um Mapping válido;
+    3. encaminha esse payload para
+       execute_supervised_step().
+    """
+
+    def __init__(
+        self,
+    ) -> None:
+        self.calls: list[
+            tuple[str, str]
+        ] = []
+
+    def build_payload(
+        self,
+        *,
+        case_state: CaseState,
+        agent_id: str,
+    ) -> Mapping[str, Any]:
+        """
+        Produz payload mínimo e determinístico
+        para o especialista solicitado.
+        """
+
+        self.calls.append(
+            (
+                case_state.case_id,
+                agent_id,
+            )
+        )
+
+        return {
+            "case_id": case_state.case_id,
+            "correlation_id": (
+                case_state.correlation_id
+            ),
+            "agent_id": agent_id,
+            "source": (
+                "fake-phase7-3-provider"
+            ),
+        }
+
+
+class InvalidPayloadProvider:
+    """
+    Provider propositalmente inválido
+    para comprovar comportamento
+    fail-closed da integração.
+    """
+
+    def build_payload(
+        self,
+        *,
+        case_state: CaseState,
+        agent_id: str,
+    ):
+        """
+        Retorna tipo incompatível
+        propositalmente.
+        """
+
+        return [
+            case_state.case_id,
+            agent_id,
+        ]
+
+
 class FakeSupervisedController:
     """
     Simula a camada supervisionada
@@ -83,6 +164,11 @@ class FakeSupervisedController:
     Sua responsabilidade aqui é apenas
     permitir testar o loop restrito de
     enriquecimento da Fase 7.3.
+
+    A partir da integração 3C também
+    aceita input_payload, reproduzindo
+    o contrato atual da camada
+    supervisionada.
     """
 
     def __init__(
@@ -95,15 +181,28 @@ class FakeSupervisedController:
 
         self.calls: list[str] = []
 
+        self.input_payloads: list[
+            dict[str, Any] | None
+        ] = []
+
     def execute_supervised_step(
         self,
         case_state: CaseState,
+        *,
+        input_payload: (
+            Mapping[str, Any]
+            | None
+        ) = None,
     ):
         """
         Executa logicamente o primeiro
         agente pendente e atualiza o
         workflow como um especialista
         concluído.
+
+        Também registra o input_payload
+        recebido para que os testes
+        comprovem a integração 3C.
         """
 
         assert (
@@ -126,6 +225,17 @@ class FakeSupervisedController:
         self.calls.append(
             agent_id
         )
+
+        if input_payload is None:
+            self.input_payloads.append(
+                None
+            )
+        else:
+            self.input_payloads.append(
+                dict(
+                    input_payload
+                )
+            )
 
         case_state.workflow.pending_agents = [
             value
@@ -232,6 +342,8 @@ def create_case(
 
 def create_controller(
     case_state: CaseState,
+    *,
+    payload_provider=None,
 ) -> tuple[
     EnrichmentE2EController,
     FakeSupervisedController,
@@ -241,11 +353,18 @@ def create_controller(
     com a camada supervisionada
     substituída por uma fake somente
     para este teste unitário.
+
+    payload_provider é opcional para
+    permitir validar tanto o modo
+    legado quanto a integração 3C.
     """
 
     controller = (
         EnrichmentE2EController(
-            SOCOrchestrator()
+            SOCOrchestrator(),
+            payload_provider=(
+                payload_provider
+            ),
         )
     )
 
@@ -307,6 +426,22 @@ def test_phase7_3_rejects_invalid_orchestrator() -> None:
     ):
         EnrichmentE2EController(
             object()
+        )
+
+
+def test_phase7_3_rejects_invalid_payload_provider() -> None:
+    """
+    Provider configurado precisa
+    implementar build_payload().
+    """
+
+    with pytest.raises(
+        TypeError,
+        match="build_payload",
+    ):
+        EnrichmentE2EController(
+            SOCOrchestrator(),
+            payload_provider=object(),
         )
 
 
@@ -410,6 +545,11 @@ def test_phase7_3_executes_enrichment_in_workflow_order() -> None:
     no WorkflowState.
 
     Ao chegar no AG-09, deve parar.
+
+    Sem provider configurado,
+    input_payload permanece None
+    para compatibilidade com o
+    comportamento anterior.
     """
 
     case = create_case()
@@ -461,6 +601,15 @@ def test_phase7_3_executes_enrichment_in_workflow_order() -> None:
             "AG-04",
             "AG-05",
             "AG-06",
+        ]
+    )
+
+    assert (
+        fake_supervised.input_payloads
+        == [
+            None,
+            None,
+            None,
         ]
     )
 
@@ -527,6 +676,13 @@ def test_phase7_3_never_executes_non_enrichment_agent() -> None:
     )
 
     assert (
+        fake_supervised.input_payloads
+        == [
+            None,
+        ]
+    )
+
+    assert (
         result.executed_agents
         == (
             "AG-04",
@@ -549,6 +705,172 @@ def test_phase7_3_never_executes_non_enrichment_agent() -> None:
     assert (
         "AG-10"
         not in result.executed_agents
+    )
+
+
+def test_phase7_3_forwards_provider_payload_to_specialist() -> None:
+    """
+    Validação principal da integração 3C.
+
+    Quando existe payload_provider:
+
+    1. controller solicita payload
+       para o agente pendente;
+    2. provider recebe CaseState
+       e agent_id corretos;
+    3. input_payload chega até
+       execute_supervised_step();
+    4. AG-09 permanece fora
+       do enriquecimento.
+    """
+
+    case = create_case()
+
+    case.workflow.pending_agents = [
+        "AG-04",
+        "AG-09",
+    ]
+
+    provider = (
+        FakePayloadProvider()
+    )
+
+    (
+        controller,
+        fake_supervised,
+    ) = create_controller(
+        case,
+        payload_provider=provider,
+    )
+
+    result = controller.run(
+        case
+    )
+
+    assert (
+        provider.calls
+        == [
+            (
+                "CASE-P7-3-0001",
+                "AG-04",
+            ),
+        ]
+    )
+
+    assert (
+        fake_supervised.calls
+        == [
+            "AG-04",
+        ]
+    )
+
+    assert (
+        fake_supervised.input_payloads
+        == [
+            {
+                "case_id": (
+                    "CASE-P7-3-0001"
+                ),
+                "correlation_id": (
+                    "CORR-P7-3-0001"
+                ),
+                "agent_id": "AG-04",
+                "source": (
+                    "fake-phase7-3-provider"
+                ),
+            },
+        ]
+    )
+
+    assert (
+        result.requested_agents
+        == (
+            "AG-04",
+        )
+    )
+
+    assert (
+        result.executed_agents
+        == (
+            "AG-04",
+        )
+    )
+
+    assert (
+        result.execution_count
+        == 1
+    )
+
+    assert (
+        result.completed
+        is True
+    )
+
+    assert (
+        result.stopped_before_non_enrichment
+        is True
+    )
+
+    assert (
+        case.workflow.pending_agents
+        == [
+            "AG-09",
+        ]
+    )
+
+
+def test_phase7_3_rejects_non_mapping_provider_payload() -> None:
+    """
+    Provider precisa devolver Mapping.
+
+    Qualquer outro tipo deve
+    falhar fechado antes da
+    execução do especialista.
+    """
+
+    case = create_case()
+
+    case.workflow.pending_agents = [
+        "AG-04",
+        "AG-09",
+    ]
+
+    provider = (
+        InvalidPayloadProvider()
+    )
+
+    (
+        controller,
+        fake_supervised,
+    ) = create_controller(
+        case,
+        payload_provider=provider,
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="Mapping esperado",
+    ):
+        controller.run(
+            case
+        )
+
+    assert (
+        fake_supervised.calls
+        == []
+    )
+
+    assert (
+        fake_supervised.input_payloads
+        == []
+    )
+
+    assert (
+        case.workflow.pending_agents
+        == [
+            "AG-04",
+            "AG-09",
+        ]
     )
 
 

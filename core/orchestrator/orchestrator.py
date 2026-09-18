@@ -2306,12 +2306,9 @@ class SOCOrchestrator:
         workflow.current_agent = None
         workflow.step_count = 1
 
-        workflow.pending_agents = (
-            self._remove_agent_id(
-                workflow.pending_agents,
-                "AG-02",
-            )
-        )
+        workflow.pending_agents = [
+            "AG-03"
+        ]
 
         workflow.failed_agents = (
             self._remove_agent_id(
