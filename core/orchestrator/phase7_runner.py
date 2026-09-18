@@ -41,6 +41,22 @@ Este runner não substitui:
 Ele apenas integra as camadas já
 validadas nas Fases 7.1 até 7.7.
 
+O provider de payload de enriquecimento
+é opcional e injetado pela camada de
+aplicação.
+
+Isso preserva a direção arquitetural:
+
+app
+    ↓
+core
+
+e impede dependência:
+
+core
+    ✕
+app
+
 Princípio:
 
     A LLM interpreta;
@@ -63,6 +79,7 @@ from core.orchestrator.e2e import (
 from core.orchestrator.enrichment import (
     ENRICHMENT_AGENT_IDS,
     EnrichmentE2EController,
+    EnrichmentPayloadProviderProtocol,
 )
 from core.orchestrator.escalation_stage import (
     ESCALATION_AGENT_ID,
@@ -162,6 +179,11 @@ class Phase7E2ERunner:
 
     O runner nunca chama um agente
     diretamente.
+
+    Quando um payload_provider é
+    configurado, ele é entregue
+    exclusivamente ao controller
+    oficial de enriquecimento.
     """
 
     def __init__(
@@ -170,12 +192,23 @@ class Phase7E2ERunner:
         | None = None,
         *,
         max_cycles: int = 32,
+        payload_provider: (
+            EnrichmentPayloadProviderProtocol
+            | None
+        ) = None,
     ) -> None:
         """
         Inicializa o runner.
 
         max_cycles é um guardrail
         adicional contra loops.
+
+        payload_provider é opcional
+        para preservar compatibilidade
+        com consumidores antigos.
+
+        Quando fornecido, precisa possuir
+        build_payload().
         """
 
         if (
@@ -213,6 +246,21 @@ class Phase7E2ERunner:
                 "entre 1 e 100."
             )
 
+        if (
+            payload_provider is not None
+            and not callable(
+                getattr(
+                    payload_provider,
+                    "build_payload",
+                    None,
+                )
+            )
+        ):
+            raise TypeError(
+                "payload_provider precisa "
+                "implementar build_payload()."
+            )
+
         self._orchestrator = (
             orchestrator
             if orchestrator is not None
@@ -221,6 +269,10 @@ class Phase7E2ERunner:
 
         self._max_cycles = (
             max_cycles
+        )
+
+        self._payload_provider = (
+            payload_provider
         )
 
         self._e2e = E2EExecutionController(
@@ -235,7 +287,10 @@ class Phase7E2ERunner:
 
         self._enrichment = (
             EnrichmentE2EController(
-                self._orchestrator
+                self._orchestrator,
+                payload_provider=(
+                    self._payload_provider
+                ),
             )
         )
 
@@ -282,6 +337,20 @@ class Phase7E2ERunner:
         """
 
         return self._max_cycles
+
+    @property
+    def payload_provider(
+        self,
+    ) -> (
+        EnrichmentPayloadProviderProtocol
+        | None
+    ):
+        """
+        Retorna o provider configurado
+        para a etapa de enriquecimento.
+        """
+
+        return self._payload_provider
 
     def run(
         self,

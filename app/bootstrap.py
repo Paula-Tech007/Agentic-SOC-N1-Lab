@@ -8,7 +8,9 @@ Responsabilidades:
 - registrar os agentes em um Registry próprio;
 - criar o AgentRuntime oficial;
 - criar o SOCOrchestrator oficial;
-- criar o Phase7E2ERunner oficial.
+- criar o Phase7E2ERunner oficial;
+- permitir composição explícita do
+  provider de enriquecimento.
 
 Esta camada NÃO contém lógica de negócio.
 
@@ -25,6 +27,15 @@ AgentRuntime
 SOCOrchestrator
     ↓
 Phase7E2ERunner
+    ↓
+EnrichmentPayloadProvider opcional
+
+A construção de Tools, RAG e providers
+permanece explícita.
+
+Isso evita efeitos colaterais, acesso
+involuntário à rede e dependência de
+credenciais durante import/bootstrap.
 """
 
 from agents.alert_intake import (
@@ -68,6 +79,9 @@ from core.orchestrator import (
     AgentRegistry,
     AgentRuntime,
     SOCOrchestrator,
+)
+from core.orchestrator.enrichment import (
+    EnrichmentPayloadProviderProtocol,
 )
 from core.orchestrator.phase7_runner import (
     Phase7E2ERunner,
@@ -148,11 +162,22 @@ def build_official_soc_orchestrator(
 def build_phase7_runner(
     *,
     max_cycles: int = 32,
+    payload_provider: (
+        EnrichmentPayloadProviderProtocol
+        | None
+    ) = None,
 ) -> Phase7E2ERunner:
     """
     Cria o Runner E2E oficial
     utilizando a composição completa
-    da aplicação.
+    dos agentes da aplicação.
+
+    Um provider de enriquecimento pode
+    ser injetado explicitamente.
+
+    Nenhum acesso à rede, RAG ou Tool
+    ocorre durante esta função por conta
+    própria.
 
     Nenhum guardrail é ignorado.
     """
@@ -167,10 +192,26 @@ def build_phase7_runner(
             int,
         )
         or max_cycles < 1
+        or max_cycles > 100
     ):
         raise ValueError(
-            "max_cycles precisa ser "
-            "um inteiro maior que zero."
+            "max_cycles precisa estar "
+            "entre 1 e 100."
+        )
+
+    if (
+        payload_provider is not None
+        and not callable(
+            getattr(
+                payload_provider,
+                "build_payload",
+                None,
+            )
+        )
+    ):
+        raise TypeError(
+            "payload_provider precisa "
+            "implementar build_payload()."
         )
 
     orchestrator = (
@@ -180,6 +221,9 @@ def build_phase7_runner(
     return Phase7E2ERunner(
         orchestrator,
         max_cycles=max_cycles,
+        payload_provider=(
+            payload_provider
+        ),
     )
 
 

@@ -17,7 +17,7 @@
   <img src="https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white" alt="Pydantic v2" />
   <img src="https://img.shields.io/badge/Ollama-Local_AI-black" alt="Ollama Local AI" />
   <img src="https://img.shields.io/badge/MCP-2.2.0-5A67D8" alt="MCP 2.2.0" />
-  <img src="https://img.shields.io/badge/Testes-321%20passed-brightgreen" alt="321 testes aprovados" />
+  <img src="https://img.shields.io/badge/Testes-358%20passed-brightgreen" alt="358 testes aprovados" />
   <img src="https://img.shields.io/badge/Fase-7%20conclu%C3%ADda-00C853" alt="Fase 7 concluída" />
   <img src="https://img.shields.io/badge/Pol%C3%ADtica-READ_ONLY-1565C0" alt="READ ONLY" />
 </p>
@@ -47,7 +47,9 @@ Conclusões críticas devem ser sustentadas por dados verificáveis, regras dete
 | 🛡️ Política das ferramentas | READ_ONLY / FAIL_CLOSED |
 | 🧰 Ferramentas MCP | 18 ferramentas defensivas |
 | 🔁 Orquestração | Fluxo E2E controlado |
-| 🧪 Testes | 321 passed |
+| 🔗 Composição operacional | ToolRuntime + RAG + Provider + Runner |
+| 🖥️ Entry point | CLI defensiva via `main.py` |
+| 🧪 Testes | 358 passed |
 | 🚫 Ações críticas autônomas | 0 |
 | 👤 Escalonamento humano | Disponível |
 
@@ -559,6 +561,131 @@ CLOSED_N1 / ESCALATED_N2 / WAITING_HUMAN
 
 ---
 
+# 🔗 Fechamento de Integração Operacional
+
+Após a conclusão do roadmap principal 0–7, foi realizado o fechamento de integração operacional para conectar as camadas já existentes sem reconstruir fases ou agentes.
+
+### Integrações concluídas
+
+| Entrega | Implementação | Status |
+| --- | --- | :---: |
+| **4A** | Provider completo AG-04 → AG-08 com suporte ao AG-07 | ✅ |
+| **4B** | Provider oficial injetado no `Phase7E2ERunner` | ✅ |
+| **4C** | Composition root operacional | ✅ |
+| **4D** | `main.py` convertido em entry point oficial | ✅ |
+
+### Composição operacional
+
+```text
+MISP / IAM / Asset / Email
+          ↓
+      ToolRuntime
+          ↓
+       ToolPolicy
+          ↓
+FullEnrichmentPayloadProvider
+          +
+     RAGRetriever
+          ↓
+EnrichmentE2EController
+          ↓
+   Phase7E2ERunner
+          ↓
+ Pipeline SOC N1
+```
+
+O provider completo atende:
+
+```text
+AG-04 → Threat Intelligence
+AG-05 → Identity
+AG-06 → Asset Context
+AG-07 → Phishing / Email
+AG-08 → Knowledge / RAG
+```
+
+### AG-07 — Segurança operacional
+
+O fluxo de phishing utiliza somente:
+
+```text
+email.get_message_metadata
+email.get_headers
+email.get_authentication_results
+email.get_attachment_metadata
+```
+
+O agente não:
+
+```text
+abre URLs
+baixa anexos
+executa anexos
+modifica mensagens
+executa ações críticas
+```
+
+Quando uma conclusão não está comprovada pelas fontes consultadas, o provider preserva comportamento conservador e pode produzir:
+
+```text
+INCONCLUSIVE
+```
+
+em vez de inventar uma classificação.
+
+---
+
+# 🖥️ Entry Point Operacional
+
+O arquivo:
+
+```text
+main.py
+```
+
+passou a representar a aplicação real.
+
+Ele não executa automaticamente ações por simples import.
+
+### Ajuda
+
+```powershell
+python .\main.py
+```
+
+### Validar a composição operacional
+
+```powershell
+python .\main.py --check
+```
+
+Esse modo monta e valida:
+
+```text
+ToolRuntime
+RAGRetriever
+FullEnrichmentPayloadProvider
+Phase7E2ERunner
+```
+
+sem executar um alerta.
+
+### Executar um alerta JSON local
+
+```powershell
+python .\main.py --alert .\caminho\alerta.json
+```
+
+### Limitar ciclos
+
+```powershell
+python .\main.py --alert .\caminho\alerta.json --max-cycles 20
+```
+
+O limite existe como guardrail contra loops operacionais.
+
+---
+
 # 🔍 Modelo de Evidências
 
 Toda conclusão deve possuir rastreabilidade.
@@ -674,40 +801,46 @@ Arquivos operacionais não são versionados no Git.
 
 # 🧪 Testes Automatizados
 
-O projeto possui atualmente:
+A regressão completa mais recente foi executada em **18/09/2026**.
+
+Resultado:
 
 ```text
-321 testes aprovados
+358 passed in 2.58s
 ```
 
-### Distribuição dos testes
+O gate local também validou:
 
-| Módulo | Testes | Status |
-| --- | ---: | :---: |
-| Fundação | 8 | ✅ |
-| Fase 2 | 20 | ✅ |
-| Fase 3 | 19 | ✅ |
-| Fase 4.0 — Tools | 20 | ✅ |
-| Fase 4.1 — MISP | 17 | ✅ |
-| Fase 4.2 — Elastic | 19 | ✅ |
-| Fase 4.3 — Identity / IAM | 24 | ✅ |
-| Fase 4.4 — Asset / CMDB | 24 | ✅ |
-| Fase 4.5 — Email / Phishing | 24 | ✅ |
-| Fase 5 — Knowledge / RAG | 30 | ✅ |
-| Fase 6 — MCP | 45 | ✅ |
-| Fase 7 — E2E | 71 | ✅ |
-| **TOTAL** | **321** | ✅ |
+```text
+compileall ............... OK
+pytest ................... 358 passed
+pip check ................ OK
+git diff --check ......... OK
+busca local de segredos .. nenhum padrão encontrado
+```
 
-### Executar
+### Executar regressão completa
 
 ```powershell
 python -m pytest -q
 ```
 
-Resultado esperado:
+Resultado atual esperado:
 
 ```text
-321 passed
+358 passed
+```
+
+### Validar dependências
+
+```powershell
+python -m pip check
+```
+
+### Validar whitespace/diff
+
+```powershell
+git --no-pager diff --check
 ```
 
 ---
@@ -718,6 +851,13 @@ Resultado esperado:
 Agentic-SOC-N1-Lab/
 │
 ├── agents/
+│
+├── app/
+│   ├── bootstrap.py
+│   ├── full_enrichment_payload_provider.py
+│   ├── full_enrichment_tool_bootstrap.py
+│   ├── operational_bootstrap.py
+│   └── rag_enrichment_payload_provider.py
 │
 ├── assets/
 │   ├── Arquitetura.png
@@ -773,6 +913,8 @@ Agentic-SOC-N1-Lab/
 
 **Roadmap principal 0–7 concluído.**
 
+Após o roadmap, o projeto recebeu o **Fechamento de Integração Operacional**, conectando oficialmente as camadas existentes ao runner e ao entry point operacional sem criar uma nova fase artificial.
+
 O projeto continua evoluindo no **mesmo repositório**, preservando arquitetura, governança e histórico.
 
 ---
@@ -813,7 +955,21 @@ python -m pytest -q
 ### Resultado atual
 
 ```text
-321 passed
+358 passed
+```
+
+## 6. Validar composição operacional
+
+Com as configurações operacionais necessárias disponíveis no ambiente:
+
+```powershell
+python .\main.py --check
+```
+
+## 7. Executar alerta local
+
+```powershell
+python .\main.py --alert .\caminho\alerta.json
 ```
 
 ---
